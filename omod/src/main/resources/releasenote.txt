@@ -1,0 +1,64 @@
+2.0.10
+- #Various validation has been implemented in receipt page like: company name validation , expiry date validation.
+- #Unit price and Institutional costs are optional now.
+- #Cost to patient column in receipt to General store. All the calculations against drugs and items will be done on this column.
+   This value is mandatory for all the drugs and items at the time of indexing.
+
+2.0.9
+Inventory & Pharmacy
+- #Billed pharmacy
+- #Issue items to patients
+- #Payment Mode
+- #Multiple mainstores
+- #module upgradation
+
+2.0.8
+- #1990             User is able to 'finish' without issuing a drug to patient
+- #1984             User can issue drugs only from the first indent
+- #1980             No header with patient details above the order ID
+- #1636             User is able to see and dispense drugs in patient queue for issuing drugs, as ordered from dashboard
+
+2.0.7
+- #660               Add "Receipt from" field in Receipt to General Store option in mainstore.
+
+2.0.6
+Bug #326: [INVENTORY] Transaction Stored with different user name
+Bug #328: [INVENTORY] Manage drug in inventory
+Bug #330: [INVENTORY]-error in Current quantity of pharmacy
+Bug #335: [INVENTORY]- Error on validation when "receipts to general store"
+Bug #336: [INVENTORY]- The title of "View stock balance expiry" is "View stock balance"
+New Requirement #300: [INVENTORY] View lists in Alphabetical Order
+New Requirement #301: [INVENTORY] Don't allow the reception of expired drugs
+New Requirement #302: [INVENTORY] Non Mandatory Drug Category filter for drug search 
+
+2.0.5
+- High priority Jenkins bugs fixed
+	STCAL_INVOKE_ON_STATIC_DATE_FORMAT_INSTANCE Total bug=8
+	RC_REF_COMPARISON
+	MS_MUTABLE_ARRAY code public static final String[] TRANSACTION_NAMES = {"RECEIPT", "ISSUE" };
+	
+
+version 2.0.2
+-Fix when transfer from mainstore to substore we will show batch-number
+
+31/05/2011
+-Fix bug issue drug many times for the same drug
+10/05/2011
+- Add patient category for issue drug to patient
+- Fix print out receipt drugs
+07/05/2011
+- Fix size print out report when issue drug to patient
+1.9.7
+-Add advance search for inventory
+27/04/2011
+- Fix issue drug|item to account|patient not correct
+23/04/2011
+- Just change layout for print out indent|receipt|issue for both main-store and sub-store
+18/04/2011
+-
+-View detail stock balance now not popup 
+-Add remove item/drug on indent/issue/receipt
+-Update some problems with ajax when receipt or indent
+15/04/2011
+-Update print for indent between main-store and sub-store
+-Fix VAT not accept with float value
