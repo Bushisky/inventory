@@ -41,11 +41,11 @@ public class MainController {
 				 if( store.getParentStores().isEmpty() && !store.getRetired()){
 					 return "redirect:/module/inventory/viewStockBalance.form";
 				 }else if( !store.getParentStores().isEmpty() && store.getIsDrug() == 1 && !store.getRetired() ){
-					 return "redirect:/module/inventory/subStoreIssueDrugList.form";
+					 return "redirect:/module/inventory/patientQueueDrugOrder.form";
 				 }else if( !store.getParentStores().isEmpty() && store.getIsDrug() == 2 && !store.getRetired() ){
 					// return "redirect:/module/inventory/itemViewStockBalanceSubStore.form";
                                      //17/11/2014  In order to get the Drug Windows first
-                                     return "redirect:/module/inventory/patientQueueDrugOrder.form";
+                                     return "redirect:/module/inventory/subStoreIssueDrugList.form";
 				 }
 			 }
 		} catch (Exception e) {

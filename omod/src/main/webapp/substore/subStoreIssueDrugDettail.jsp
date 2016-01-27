@@ -183,14 +183,14 @@
 			<td><b>:${paymentMode}</b></td>
 		</tr> --%>
 		<tr>
-			<td>Attending Pharmacist</td>
+			<td>Attending Cashier</td>
 			<td><b>:${cashier}</b></td>
 		</tr>
 	</c:when>
 	</c:choose>
 </table>
 </div>
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="inventory.receiptItem.print"/>" onClick="INDENT.printDiv();" />
+<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="inventory.receiptDrug.print"/>" onClick="INDENT.printDiv();" />
 
 <!-- PRINT DIV -->
 <div  id="printDiv" style="display: none;  width: 1280px; font-size: 0.8em">
@@ -334,7 +334,7 @@
 			<td><b>:${paymentMode}</b></td>
 		</tr> --%>
 		<tr>
-			<td>Attending Pharmacist</td>
+			<td>Attending Cashier</td>
 			<td><b>:${cashier}</b></td>
 		</tr>
 	</table>

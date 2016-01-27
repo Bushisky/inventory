@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
@@ -21,6 +22,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Role;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.BillingService;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
@@ -55,6 +57,7 @@ import org.openmrs.module.inventory.model.InventoryStoreItemTransactionDetail;
 import org.openmrs.module.inventory.util.DateUtils;
 import org.openmrs.module.inventory.util.PagingUtil;
 import org.openmrs.module.inventory.util.RequestUtil;
+import org.openmrs.module.inventory.web.controller.patientqueuedrugorder.DrugOrderController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -169,6 +172,7 @@ public class AjaxController {
 		return "/module/inventory/autocomplete/specificationByItem";
 	}
 
+	@SuppressWarnings("static-access")
 	@RequestMapping("/module/inventory/clearSlip.form")
 	public String clearSlip(
 			@RequestParam(value = "action", required = false) String name,
@@ -341,14 +345,17 @@ public class AjaxController {
 	public String listReceiptDrugAvailable(
 			@RequestParam(value = "drugId", required = false) Integer drugId,
 			@RequestParam(value = "formulationId", required = false) Integer formulationId,
+			
 			Model model) {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
+		ConceptService conceptService = Context.getConceptService();
 		InventoryDrug drug = inventoryService.getDrugById(drugId);
 		InventoryStore store = inventoryService
 				.getStoreByCollectionRole(new ArrayList<Role>(Context
 						.getAuthenticatedUser().getAllRoles()));
-		if (store != null && drug != null && formulationId != null) {
+		if (store != null && drug != null && formulationId != null ) {
+			
 			List<InventoryStoreDrugTransactionDetail> listReceiptDrug = inventoryService
 					.listStoreDrugTransactionDetail(store.getId(),
 							drug.getId(), formulationId, true);
@@ -367,15 +374,18 @@ public class AjaxController {
 				if (CollectionUtils.isNotEmpty(listReceiptDrug)) {
 					for (InventoryStoreDrugTransactionDetail drugDetail : listReceiptDrug) {
 						for (InventoryStoreDrugPatientDetail drugPatient : listDrug) {
+							//System.out.println("drugDetail.getId()+++"+drugDetail.getId()+"drugPatient.getTransactionDetail().getId()***"+drugPatient.getTransactionDetail().getId());
 							if (drugDetail.getId().equals(
 									drugPatient.getTransactionDetail().getId())) {
 								drugDetail.setCurrentQuantity(drugDetail
 										.getCurrentQuantity()
-										- drugPatient.getQuantity());
+										);
+								
 							}
 
 						}
 						if (drugDetail.getCurrentQuantity() > 0) {
+						
 							listReceiptDrugReturn.add(drugDetail);
 							check = true;
 						}
@@ -391,7 +401,8 @@ public class AjaxController {
 									drugAccount.getTransactionDetail().getId())) {
 								drugDetail.setCurrentQuantity(drugDetail
 										.getCurrentQuantity()
-										- drugAccount.getQuantity());
+										);
+								
 							}
 						}
 						if (drugDetail.getCurrentQuantity() > 0 && !check) {
@@ -406,6 +417,9 @@ public class AjaxController {
 			}
 
 			model.addAttribute("listReceiptDrug", listReceiptDrugReturn);
+			//model.addAttribute("frequencyName", frequencyName);
+			//model.addAttribute("noOfDays", days);
+			//model.addAttribute("comments", comments);
 		}
 
 		return "/module/inventory/autocomplete/listReceiptDrug";
@@ -429,6 +443,7 @@ public class AjaxController {
 
 			int userId = Context.getAuthenticatedUser().getId();
 			String fowardParam = "issueItemDetail_" + userId;
+			@SuppressWarnings("unchecked")
 			List<InventoryStoreItemAccountDetail> list = (List<InventoryStoreItemAccountDetail>) StoreSingleton
 					.getInstance().getHash().get(fowardParam);
 			if (CollectionUtils.isNotEmpty(list)) {
@@ -670,16 +685,16 @@ public class AjaxController {
 								.getTransactionDetail().getDrug().getId(),
 								pDetail.getTransactionDetail().getFormulation()
 										.getId());
-				int t = totalQuantity - pDetail.getQuantity();
+				   int t = totalQuantity;
 				InventoryStoreDrugTransactionDetail drugTransactionDetail = inventoryService
 						.getStoreDrugTransactionDetailById(pDetail
 								.getTransactionDetail().getId());
 				pDetail.getTransactionDetail().setCurrentQuantity(
-						drugTransactionDetail.getCurrentQuantity()
-								- pDetail.getQuantity());
+						drugTransactionDetail.getCurrentQuantity());
 				inventoryService.saveStoreDrugTransactionDetail(pDetail
 						.getTransactionDetail());
-
+				
+		    
 				// save transactiondetail first
 				InventoryStoreDrugTransactionDetail transDetail = new InventoryStoreDrugTransactionDetail();
 				transDetail.setTransaction(transaction);
@@ -709,6 +724,10 @@ public class AjaxController {
 				transDetail.setReorderPoint(pDetail.getTransactionDetail().getDrug().getReorderQty());
 				transDetail.setAttribute(pDetail.getTransactionDetail().getDrug().getAttributeName());
 				transDetail.setPatientType(patientType);
+				
+				 transDetail.setFrequency(pDetail.getTransactionDetail().getFrequency());
+				 transDetail.setNoOfDays(pDetail.getTransactionDetail().getNoOfDays());
+				 transDetail.setComments(pDetail.getTransactionDetail().getComments());
 				/*
 				 * Money moneyUnitPrice = new
 				 * Money(pDetail.getTransactionDetail().getUnitPrice()); Money
@@ -957,8 +976,7 @@ public class AjaxController {
 				pDetail.getTransactionDetail().setCurrentQuantity(
 						itemTransactionDetail.getCurrentQuantity()
 								- pDetail.getQuantity());
-				// System.out.println("get current quantity: "+pDetail.getTransactionDetail().getCurrentQuantity());
-				// System.out.println("total quantity: "+totalQuantity);
+				
 				inventoryService.saveStoreItemTransactionDetail(pDetail
 						.getTransactionDetail());
 
@@ -1251,11 +1269,103 @@ public class AjaxController {
 		
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
+		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 		
 		List<InventoryStoreDrugPatientDetail> listDrugIssue = inventoryService
 				.listStoreDrugPatientDetail(issueId);
+		InventoryStoreDrugPatient inventoryStoreDrugPatient = new InventoryStoreDrugPatient();
+		
+		if ( inventoryStoreDrugPatient != null && listDrugIssue != null && listDrugIssue.size() > 0) {
+		inventoryStoreDrugPatient.setStore(store);
+		
+		
+		
+		inventoryStoreDrugPatient.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
+	
+		inventoryStoreDrugPatient = inventoryService.saveStoreDrugPatient(inventoryStoreDrugPatient);
+		
+		InventoryStoreDrugTransaction transaction = new InventoryStoreDrugTransaction();
+		transaction.setDescription("ISSUE DRUG TO PATIENT "+DateUtils.getDDMMYYYY());
+		transaction.setStore(store);
+		transaction.setTypeTransaction(ActionValue.TRANSACTION[1]);
+		
+		transaction.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
+		
+		transaction = inventoryService.saveStoreDrugTransaction(transaction);
+		for (InventoryStoreDrugPatientDetail pDetail : listDrugIssue) {
+			
+			Date date1 = new Date();
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Integer totalQuantity = inventoryService
+					.sumCurrentQuantityDrugOfStore(store.getId(), pDetail
+							.getTransactionDetail().getDrug().getId(),
+							pDetail.getTransactionDetail().getFormulation()
+									.getId());
+			int t = totalQuantity - pDetail.getQuantity();
+			InventoryStoreDrugTransactionDetail inventoryStoreDrugTransactionDetail  = inventoryService
+					.getStoreDrugTransactionDetailById(pDetail.getTransactionDetail().getParent().getId());
+			InventoryStoreDrugTransactionDetail drugTransactionDetail = inventoryService.getStoreDrugTransactionDetailById(inventoryStoreDrugTransactionDetail.getId());
+			inventoryStoreDrugTransactionDetail.setCurrentQuantity(drugTransactionDetail.getCurrentQuantity()-pDetail.getQuantity());
+			inventoryService.saveStoreDrugTransactionDetail( inventoryStoreDrugTransactionDetail);
 
-          
+			// save transactiondetail first
+			InventoryStoreDrugTransactionDetail transDetail = new InventoryStoreDrugTransactionDetail();
+			transDetail.setTransaction(transaction);
+			transDetail.setCurrentQuantity(0);
+			transDetail.setIssueQuantity(pDetail.getQuantity());
+			transDetail.setOpeningBalance( totalQuantity);
+			transDetail.setClosingBalance(t);
+			transDetail.setQuantity(0);
+			transDetail.setVAT(pDetail.getTransactionDetail().getVAT());
+			transDetail.setCostToPatient(pDetail.getTransactionDetail().getCostToPatient());
+			transDetail.setUnitPrice(pDetail.getTransactionDetail()
+					.getUnitPrice());
+			transDetail.setDrug(pDetail.getTransactionDetail().getDrug());
+			transDetail.setFormulation(pDetail.getTransactionDetail()
+					.getFormulation());
+			transDetail.setBatchNo(pDetail.getTransactionDetail()
+					.getBatchNo());
+			transDetail.setCompanyName(pDetail.getTransactionDetail()
+					.getCompanyName());
+			transDetail.setDateManufacture(pDetail.getTransactionDetail()
+					.getDateManufacture());
+			transDetail.setDateExpiry(pDetail.getTransactionDetail()
+					.getDateExpiry());
+			transDetail.setReceiptDate(pDetail.getTransactionDetail()
+					.getReceiptDate());
+			transDetail.setCreatedOn(date1);
+			transDetail.setReorderPoint(pDetail.getTransactionDetail().getDrug().getReorderQty());
+			transDetail.setAttribute(pDetail.getTransactionDetail().getDrug().getAttributeName());
+			transDetail.setFrequency(pDetail.getTransactionDetail().getFrequency());transDetail.setNoOfDays(pDetail.getTransactionDetail().getNoOfDays());
+			transDetail.setComments(pDetail.getTransactionDetail().getComments());
+			 
+
+			BigDecimal moneyUnitPrice = pDetail.getTransactionDetail()
+					.getCostToPatient()
+					.multiply(new BigDecimal(pDetail.getQuantity()));
+			
+			transDetail.setTotalPrice(moneyUnitPrice);
+
+			transDetail.setParent(pDetail.getTransactionDetail());
+			transDetail = inventoryService
+					.saveStoreDrugTransactionDetail(transDetail);
+			pDetail.setQuantity( pDetail.getQuantity());
+			
+			 pDetail.setTransactionDetail(transDetail);
+			
+			
+			// save issue to patient detail
+			inventoryService.saveStoreDrugPatientDetail(pDetail);
+			
+
+		}
+         
+		}
           
 		model.addAttribute("listDrugIssue", listDrugIssue);
 		if (CollectionUtils.isNotEmpty(listDrugIssue)) {
@@ -1273,6 +1383,7 @@ public class AjaxController {
             int patientId = pi.getPatient().getPatientId();
             Date issueDate = listDrugIssue.get(0).getStoreDrugPatient().getCreatedOn();
             Encounter encounterId = listDrugIssue.get(0).getTransactionDetail().getEncounter();
+            
             List<OpdDrugOrder> listOfNotDispensedOrder = null;
              if(encounterId!= null )
             {
@@ -1661,7 +1772,7 @@ public class AjaxController {
 			if (CollectionUtils.isNotEmpty(list)) {
 				InventoryStoreDrugPatientDetail a = (InventoryStoreDrugPatientDetail) list
 						.get(position);
-				// System.out.println("fowardParam5 a drug : "+a.getTransactionDetail().getDrug().getName());
+				// .out.println("fowardParam5 a drug : "+a.getTransactionDetail().getDrug().getName());
 				list.remove(a);
 			}
 			StoreSingleton.getInstance().getHash().put(fowardParam5, list);

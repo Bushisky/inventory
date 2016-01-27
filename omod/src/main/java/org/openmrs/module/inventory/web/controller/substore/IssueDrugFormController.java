@@ -21,12 +21,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Role;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
+import org.openmrs.module.hospitalcore.InventoryCommonService;
 import org.openmrs.module.hospitalcore.model.InventoryDrug;
 import org.openmrs.module.hospitalcore.model.InventoryDrugCategory;
 import org.openmrs.module.hospitalcore.model.InventoryDrugFormulation;
@@ -54,7 +58,11 @@ public class IssueDrugFormController {
 		/*if(store != null && store.getParent() != null && store.getIsDrug() != 1){
 			return "redirect:/module/inventory/subStoreIssueDrugAccountForm.form";
 		}*/
-		
+		InventoryCommonService inventoryCommonService = Context
+				.getService(InventoryCommonService.class);
+		List<Concept> drugFrequencyConcept = inventoryCommonService
+				.getDrugFrequency();
+		model.addAttribute("drugFrequencyList", drugFrequencyConcept);
 		List<InventoryDrugCategory> listCategory = inventoryService.findDrugCategory("");
 		model.addAttribute("listCategory", listCategory);
 		model.addAttribute("categoryId", categoryId);
@@ -132,35 +140,54 @@ public class IssueDrugFormController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String submit(HttpServletRequest request, Model model) {
 		List<String> errors = new ArrayList<String>();
-		
+		ConceptService conceptService = Context.getConceptService();
 		int drugId = 0;
 		String drugN = "", drugIdStr = "";
 		InventoryDrug drug = null;
 		
 		int userId = Context.getAuthenticatedUser().getId();
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
+		
+		
 		List<InventoryDrugCategory> listCategory = inventoryService.findDrugCategory("");
 		model.addAttribute("listCategory", listCategory);
+		InventoryCommonService inventoryCommonService = Context
+				.getService(InventoryCommonService.class);
+		
+		Integer frequency=NumberUtils.toInt(request.getParameter("frequency"),0);
+		Concept freCon = conceptService.getConcept(frequency);
+		Integer noOfDays;
+		noOfDays = NumberUtils.toInt(request.getParameter("noOfDays"),0);
+		String comments;
+		comments = request.getParameter("comments");
 		int category = NumberUtils.toInt(request.getParameter("category"), 0);
 		Integer formulation = NumberUtils.toInt(request.getParameter("formulation"), 0);
 		
+		
 		if (request.getParameter("drugName") != null)
 			drugN = request.getParameter("drugName");
+		
 		if (request.getParameter("drugId") != null)
 			drugIdStr = request.getParameter("drugId");
 		
 		if (!drugN.equalsIgnoreCase("")) {
 			
 			drug = inventoryService.getDrugByName(drugN);
+			
 		} else if (!drugIdStr.equalsIgnoreCase("")) {
 			drugId = Integer.parseInt(drugIdStr);
 			drug = inventoryService.getDrugById(drugId);
+			
+			
+			
+			
 		}
 		
 		if (drug == null) {
 			errors.add("inventory.receiptDrug.drug.required");
 		} else {
 			drugId = drug.getId();
+			
 		}
 		
 		InventoryDrugFormulation formulationO = inventoryService.getDrugFormulationById(formulation);
@@ -170,6 +197,7 @@ public class IssueDrugFormController {
 		if (formulationO != null && drug != null && !drug.getFormulations().contains(formulationO)) {
 			errors.add("inventory.receiptDrug.formulation.notCorrect");
 		}
+		
 		if (CollectionUtils.isNotEmpty(errors)) {
 			
 			model.addAttribute("category", category);
@@ -190,13 +218,14 @@ public class IssueDrugFormController {
 		List<Integer> listIssueQty = new ArrayList<Integer>();
 		List<InventoryStoreDrugTransactionDetail> listReceiptDrug = inventoryService.listStoreDrugTransactionDetail(
 		    store.getId(), drug.getId(), formulation, true);
+		
 		boolean checkCorrect = true;
 		if (listReceiptDrug != null) {
 			model.addAttribute("listReceiptDrug", listReceiptDrug);
 			for (InventoryStoreDrugTransactionDetail t : listReceiptDrug) {
 				
 				Integer temp = NumberUtils.toInt(request.getParameter(t.getId() + ""), 0);
-				//System.out.println(" transaction detail "+t.getId() +" : "+temp);
+				
 				if (temp > 0) {
 					checkCorrect = false;
 				} else {
@@ -217,15 +246,20 @@ public class IssueDrugFormController {
 			
 			model.addAttribute("category", category);
 			model.addAttribute("formulation", formulation);
+			model.addAttribute("frequency", frequency);
+			model.addAttribute("noOfDays", noOfDays);
+			model.addAttribute("comments", comments);
 			model.addAttribute("listIssueQty", listIssueQty);
 			model.addAttribute("drugId", drugId);
 			model.addAttribute("errors", errors);
 			String fowardParam = "issueDrugDetail_" + userId;
 			List<InventoryStoreDrugPatientDetail> list = (List<InventoryStoreDrugPatientDetail>) StoreSingleton
 			        .getInstance().getHash().get(fowardParam);
+			
 			StoreSingleton.getInstance().getHash().put(fowardParam, list);
 			InventoryStoreDrugPatient issueDrugPatient = (InventoryStoreDrugPatient) StoreSingleton.getInstance().getHash()
 			        .get("issueDrug_" + userId);
+			
 			model.addAttribute("issueDrugPatient", issueDrugPatient);
 			model.addAttribute("listPatientDetail", list);
 			return "/module/inventory/substore/subStoreIssueDrugForm";
@@ -242,27 +276,40 @@ public class IssueDrugFormController {
 		}
 		for (InventoryStoreDrugTransactionDetail t : listReceiptDrug) {
 			Integer temp = NumberUtils.toInt(request.getParameter(t.getId() + ""), 0);
+			
+			
 			if (temp > 0) {
 				if (CollectionUtils.isNotEmpty(list)) {
 					for (int i = 0; i < list.size(); i++) {
 						InventoryStoreDrugPatientDetail dtail = list.get(i);
+						
 						if (t.getId().equals(dtail.getTransactionDetail().getId())) {
+							
 							listExt.remove(i);
 							temp += dtail.getQuantity();
+							
 							break;
 						}
 					}
 				}
-				//System.out.println("temp add vao issue : "+temp);
+				//frequency ,no of days,comments are added in issue drug to patient
+				t.setFrequency(freCon.getName().getConcept());
+				t.setNoOfDays(noOfDays.intValue());
+				t.setComments(comments);
+				
 				InventoryStoreDrugPatientDetail issueDrugDetail = new InventoryStoreDrugPatientDetail();
 				issueDrugDetail.setTransactionDetail(t);
 				issueDrugDetail.setQuantity(temp);
 				listExt.add(issueDrugDetail);
+				
+				
+				 
 			}
 		}
+		
 		StoreSingleton.getInstance().getHash().put(fowardParam, listExt);
-		InventoryStoreDrugPatient issueDrugPatient = (InventoryStoreDrugPatient) StoreSingleton.getInstance().getHash()
-		        .get("issueDrug_" + userId);
+		InventoryStoreDrugPatient issueDrugPatient = (InventoryStoreDrugPatient) StoreSingleton.getInstance().getHash().get("issueDrug_" + userId);
+		
 		//model.addAttribute("issueDrugPatient", issueDrugPatient);
 		//model.addAttribute("listPatientDetail", list);
 		return "redirect:/module/inventory/subStoreIssueDrugForm.form";

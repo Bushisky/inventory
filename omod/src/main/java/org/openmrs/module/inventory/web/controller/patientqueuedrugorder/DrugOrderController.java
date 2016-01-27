@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.Concept;
@@ -153,6 +154,7 @@ public class DrugOrderController {
 			
 			formulationId = Integer.parseInt(request.getParameter(avId
 					+ "_fFormulationId"));
+			
 			quantity = Integer.parseInt(request.getParameter(avId
 					+ "_fQuantity"));
 			
@@ -171,9 +173,12 @@ public class DrugOrderController {
 			 
 			 InventoryStoreDrugTransactionDetail inventoryStoreDrugTransactionDetail = inventoryService.getStoreDrugTransactionDetailById(avlId);
 			 Integer totalQuantity = inventoryService.sumCurrentQuantityDrugOfStore(store.getId(),inventoryStoreDrugTransactionDetail.getDrug().getId(), inventoryDrugFormulation.getId());
-			 int t = totalQuantity -quantity;
+			 // int t = totalQuantity -quantity;
+		     int t = totalQuantity;
 			 InventoryStoreDrugTransactionDetail drugTransactionDetail = inventoryService.getStoreDrugTransactionDetailById(inventoryStoreDrugTransactionDetail.getId());
-			 inventoryStoreDrugTransactionDetail.setCurrentQuantity(drugTransactionDetail.getCurrentQuantity() - quantity);
+			//inventoryStoreDrugTransactionDetail.setCurrentQuantity(drugTransactionDetail.getCurrentQuantity() - quantity);
+			inventoryStoreDrugTransactionDetail.setCurrentQuantity(drugTransactionDetail.getCurrentQuantity());
+			
              inventoryService.saveStoreDrugTransactionDetail(inventoryStoreDrugTransactionDetail);
 				
 			 //save transactiondetail first
@@ -181,7 +186,7 @@ public class DrugOrderController {
 			 transDetail.setTransaction(transaction);
 			 transDetail.setCurrentQuantity(0);
 			 transDetail.setIssueQuantity(quantity);
-			 transDetail.setOpeningBalance(totalQuantity);
+		 transDetail.setOpeningBalance(totalQuantity);
 			 transDetail.setClosingBalance(t);
 			 transDetail.setQuantity(0);
 			 transDetail.setVAT(inventoryStoreDrugTransactionDetail.getVAT());
@@ -213,6 +218,7 @@ public class DrugOrderController {
 			 transDetail = inventoryService.saveStoreDrugTransactionDetail(transDetail);
 				
 			 pDetail.setQuantity(quantity);
+			 
 			 pDetail.setStoreDrugPatient(inventoryStoreDrugPatient);
 			 pDetail.setTransactionDetail(transDetail);
 			 //save issue to patient detail
@@ -230,12 +236,12 @@ public class DrugOrderController {
 
 				
 				IndoorPatientServiceBillItem item = new IndoorPatientServiceBillItem();
-			//	System.out.println("pDetail.getTransactionDetail().getCostToPatient():"+pDetail.getTransactionDetail().getCostToPatient());
+				
 				item.setUnitPrice(pDetail.getTransactionDetail().getCostToPatient());
 				item.setAmount(moneyUnitPrice);
 				item.setQuantity(pDetail.getQuantity());
 				
-		    //  System.out.println("pDetail.getQuantity():"+pDetail.getQuantity());
+		    
 				
 				item.setName(pDetail.getTransactionDetail().getDrug().getName());
 				item.setCreatedDate(new Date());
@@ -246,7 +252,9 @@ public class DrugOrderController {
 				bill = billingService.saveIndoorPatientServiceBill(bill);
 				
 			 OpdDrugOrder opdDrugOrder = inventoryService.getOpdDrugOrder(patientId,encounterId,
-					 inventoryStoreDrugTransactionDetail.getDrug().getId(),formulationId);
+			 inventoryStoreDrugTransactionDetail.getDrug().getId(),formulationId);
+			   
+				
 			 PatientDashboardService patientDashboardService = Context.getService(PatientDashboardService.class);
 			 opdDrugOrder.setOrderStatus(1);
 			 patientDashboardService.saveOrUpdateOpdDrugOrder(opdDrugOrder);

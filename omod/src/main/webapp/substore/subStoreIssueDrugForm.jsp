@@ -30,13 +30,12 @@
 <openmrs:globalProperty var="userLocation" key="hospital.location_user" defaultValue="false"/>
 <script type="text/javascript">
 var cat="General";
-
 function getValue()
   {
 	
 	var patientType = $("#patientType").val();
 	ISSUE.processSlip('0',patientType);
-  }
+  };
 
 
 </script>
@@ -105,11 +104,12 @@ function getValue()
 					
 					</td>
 				</tr>
-				<tr>
+				
+					<tr>
 					<td><spring:message code="inventory.drug.formulation" /><em>*</em></td>
 					<td>
 						<div id="divFormulation">
-							<select id="formulation" name="formulation">
+							<select id="formulation" name="formulation" >
 								<option value="">
 									<spring:message code="inventory.pleaseSelect" />
 								</option>
@@ -117,6 +117,46 @@ function getValue()
 						</div>
 					</td>
 				</tr>
+			<tr>
+					<td>Frequency<em>*</em></td>
+					<td>
+						<div id="divFrequency">
+							<select id="frequency" name="frequency"  >
+										<option value="">Please select</option>
+										<c:forEach items="${drugFrequencyList}" var="dfl">
+										
+											<option value="${dfl.conceptId}">${dfl.name}</option>
+											
+										</c:forEach>
+									</select>
+									<!--<select hidden id="drugId" >
+<option value="${drugId}"></option>
+</select>
+<select hidden id="formulation" >
+
+           <option value="${formulation}" ></option>
+     
+
+</select>-->
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>No Of Days<em>*</em></td>
+					<td>
+						<div class="no-of-days">
+									<input type="text" id="noOfDays" name="noOfDays"
+										placeholder="No Of Days" size="7">
+								</div>
+					</td>
+				</tr>
+				<tr>              <td>Comments<em>*</em></td>
+								<td>
+								<div class="comments">
+									<input id="comments"  type="text" name="comments" placeholder="Comments">
+								</div>
+								</td>
+								</tr>
 			</table>
 			<br />
 			<div id="divDrugAvailable">
@@ -176,6 +216,9 @@ function getValue()
 				<th><spring:message code="inventory.drug.category" /></th>
 				<th><spring:message code="inventory.drug.name" /></th>
 				<th><spring:message code="inventory.drug.formulation" /></th>
+				<th><spring:message code="inventory.viewStockBalance.frequency"/></th>
+				<th><spring:message code="inventory.issueDrug.noOfDays"/></th>
+	            <th><spring:message code="inventory.issueDrug.comments"/></th>
 				<th><spring:message code="inventory.receiptDrug.quantity" /></th>
 				<th><spring:message code="inventory.receiptDrug.price" text="Price" /></th>
 			</tr>
@@ -197,6 +240,9 @@ function getValue()
 							<td><a href="#" title="Remove this"
 								onclick="INVENTORY.removeObject('${varStatus.index}','5');">${issue.transactionDetail.drug.name}</a></td>
 							<td>${issue.transactionDetail.formulation.name}-${issue.transactionDetail.formulation.dozage}</td>
+							<td>${issue.transactionDetail.frequency.name} </td>
+							<td>${issue.transactionDetail.noOfDays} </td>	
+		                    <td>${issue.transactionDetail.comments} </td>
 							<td>${issue.quantity}</td>
 							<td><fmt:formatNumber value="${price}" type="number" maxFractionDigits="2"/></td>
 						</tr>
@@ -311,6 +357,9 @@ function getValue()
 				<th><spring:message code="inventory.drug.name" /></th>
 				<th><spring:message code="inventory.drug.formulation" /></th>
 				<th><spring:message code="inventory.receiptDrug.quantity" /></th>
+				<th><spring:message code="inventory.viewStockBalance.frequency"/></th>
+				<th><spring:message code="inventory.issueDrug.noOfDays"/></th>
+	            <th><spring:message code="inventory.issueDrug.comments"/></th>
 				<th><spring:message code="inventory.receiptDrug.price" text="Price" /></th>
 			</tr>
 			<c:choose>
@@ -329,6 +378,9 @@ function getValue()
 							<td><center><c:out value="${varStatus.count }" /></center></td>
 							<td><center>${issue.transactionDetail.drug.name}</center></td>
 							<td><center>${issue.transactionDetail.formulation.name}-${issue.transactionDetail.formulation.dozage}</center></td>
+							<td><center>${issue.transactionDetail.frequency.name}</center></td>
+							<td>${issue.transactionDetail.noOfDays} </td>	
+	                        <td>${issue.transactionDetail.comments} </td>
 							<td><center>${issue.quantity}</center></td>
 							<td><center><fmt:formatNumber value="${price}" type="number" maxFractionDigits="2"/></center></td>
 						</tr>
