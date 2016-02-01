@@ -504,7 +504,7 @@ INDENT={
 				}
 			}
 		},
-		printDiv : function (id)
+		printDiv : function ()
 		{  
 	
 		  	jQuery("div#printDiv").printArea({mode:"popup",popClose:true,popTitle: "Support by HISP india(hispindia.org)"});
