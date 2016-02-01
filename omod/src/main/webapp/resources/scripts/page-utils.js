@@ -504,10 +504,12 @@ INDENT={
 				}
 			}
 		},
-		printDiv : function ()
-		{
+		printDiv : function (id)
+		{  
+	
 		  	jQuery("div#printDiv").printArea({mode:"popup",popClose:true,popTitle: "Support by HISP india(hispindia.org)"});
 		},
+		
 		processSlip : function(action){
 				if(action == 0){
 					if(SESSION.checkSession()){
@@ -708,6 +710,30 @@ ISSUE={
 				}
 			}
 		},
+		printDiv : function(receiptid,flag)
+		{ jQuery("div#printDiv").printArea({mode:"popup",popClose:true,popTitle: "Support by HISP india(hispindia.org)"});
+		var ids=receiptid;
+		  var f= flag;   
+		
+		
+         if(f==0)
+        	 {
+        		if(SESSION.checkSession()){
+					var data = jQuery.ajax(
+							{ 
+								type:"GET"
+								,url: "subStoreIssueDrugDeduct.form"
+								,data: ({ receiptid :ids, flag :f})	
+								,async: false
+								, cache : false
+							}).responseText;
+					
+        		}
+			 
+			 
+		}
+         
+		},
 		onBlurDrug : function(thiz)
 		{
 			var x = jQuery(thiz).val();
@@ -822,13 +848,14 @@ ISSUE={
 		formulationOnChange : function(thiz){
 			var formulationId = jQuery(thiz).val();
 			var drugId = jQuery("#drugId").val();
+			
 			if(formulationId != '' && drugId != ''){
 				if(SESSION.checkSession()){
 					var data = jQuery.ajax(
 							{
 								type:"GET"
 								,url: "listReceiptDrug.form"
-								,data: ({drugId: drugId,formulationId: formulationId})	
+								,data: ({drugId: drugId,formulationId: formulationId })	
 								,async: false
 								, cache : false
 							}).responseText;
@@ -840,6 +867,33 @@ ISSUE={
 				}
 			}
 		},
+		frequencyOnChange : function(thiz){
+			
+			var formulationId = jQuery("#formulation").val();
+			
+			var drugId = jQuery("#drugId").val();
+			
+			var frequency=jQuery(thiz).val();
+			
+			if(formulationId != '' && drugId != ''&& frequency!=''){
+				if(SESSION.checkSession()){
+					var data = jQuery.ajax(
+							{
+								type:"GET"
+								,url: "listReceiptDrug.form"
+								,data: ({drugId: drugId,formulationId: formulationId ,frequency: frequency})	
+								,async: false
+								, cache : false
+							}).responseText;
+					if(data != undefined  && data != null && data != ''){
+						jQuery("#divDrugAvailable").html(data);
+					}else{
+						alert('Please refresh page!');
+					}
+				}
+			}
+		},
+		
 		specificationOnChange : function(thiz){
 			
 				var specificationId = jQuery(thiz).val();
@@ -978,9 +1032,15 @@ ISSUE={
 			}
 			
 		},		
-		detailIssueDrug : function(id){
+		detailIssueDrug : function(id){ 
 			if(SESSION.checkSession()){
 				url = "subStoreIssueDrugDettail.form?issueId="+id+"&keepThis=false&TB_iframe=true&height=500&width=800";
+				tb_show("Detail Issue....",url,false);
+			}
+		},
+		deductIssueDrug : function(id){
+			if(SESSION.checkSession()){
+				url = "subStoreIssueDrugDeduct.form?issueId="+id+"&keepThis=false&TB_iframe=true&height=500&width=800";
 				tb_show("Detail Issue....",url,false);
 			}
 		},

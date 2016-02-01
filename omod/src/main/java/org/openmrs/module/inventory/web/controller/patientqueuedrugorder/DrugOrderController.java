@@ -186,7 +186,7 @@ public class DrugOrderController {
 			 transDetail.setTransaction(transaction);
 			 transDetail.setCurrentQuantity(0);
 			 transDetail.setIssueQuantity(quantity);
-		 transDetail.setOpeningBalance(totalQuantity);
+		     transDetail.setOpeningBalance(totalQuantity);
 			 transDetail.setClosingBalance(t);
 			 transDetail.setQuantity(0);
 			 transDetail.setVAT(inventoryStoreDrugTransactionDetail.getVAT());
@@ -208,7 +208,7 @@ public class DrugOrderController {
 			 transDetail.setFrequency(fCon);
 			 transDetail.setNoOfDays(noOfDays);
 			 transDetail.setComments(comments);
-			
+			 transDetail.setFlag(0);
 			 
 			 BigDecimal moneyUnitPrice = inventoryStoreDrugTransactionDetail.getCostToPatient().multiply(new BigDecimal(quantity));
 			// moneyUnitPrice = moneyUnitPrice.add(moneyUnitPrice.multiply(inventoryStoreDrugTransactionDetail.getVAT().divide(new BigDecimal(100))));

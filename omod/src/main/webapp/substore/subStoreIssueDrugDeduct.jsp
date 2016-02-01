@@ -1,28 +1,8 @@
- <%--
- *  Copyright 2009 Society for Health Information Systems Programmes, India (HISP India)
- *
- *  This file is part of Inventory module.
- *
- *  Inventory module is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
-
- *  Inventory module is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Inventory module.  If not, see <http://www.gnu.org/licenses/>.
- *
---%> 
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/headerMinimal.jsp" %>
 <%@ include file="../includes/js_css.jsp" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <openmrs:globalProperty var="userLocation" key="hospital.location_user" defaultValue="false"/>
-
 
 <style>
 @media print {
@@ -44,161 +24,7 @@
 </style>
 
 <div style="max-height: 50px; max-width: 1800px;">
-	<b class="boxHeader">Detail Issue</b>
-</div>
-
-<div id="patientDetails">	
-	<table>
-		<tr>
-			<td>Patient ID :</td>
-            <td>&nbsp;&nbsp;&nbsp;</td>
-			<td>&nbsp;${identifier}</td>
-		</tr>
-		<tr>
-			<td>Name :</td><td>&nbsp;</td>
-			<td>&nbsp;${givenName}&nbsp;
-				${familyName}&nbsp;&nbsp;${fn:replace(middleName,","," ")}</td>
-		</tr>
-        <tr>
-        	<td>Age:</td><td>&nbsp;</td>
-        	<td>&nbsp;
-        	<c:choose>
-				<c:when test ="${age < 1}"> < 1 </c:when>
-				<c:otherwise> ${age}</c:otherwise>	
-			</c:choose>
-			</td>
-      </tr>
-        <tr>
-        	<td>Gender:</td><td>&nbsp;</td>
-        	<td>&nbsp;${gender}</td>
-        </tr>
-        <tr>
-        	<td>Payment Category:</td><td>&nbsp;</td>
-        	<td>&nbsp;${paymentSubCategory}</td>
-        </tr>
-		<tr>
-			<td>Date :</td><td>&nbsp;</td>
-			<td>${date}</td>
-		</tr>
-	</table>
-</div>
-
-<span class="boxHeader">Issue Drugs Detail</span>
-<div class="box">
-<table width="100%" cellpadding="5" cellspacing="0">
-	<tr align="center">
-	<th style="width:10px">S.No</th>
-	
-	<th style="width:10px"><spring:message code="inventory.viewStockBalance.drug"/></th>
-	<th style="width:10px"><spring:message code="inventory.viewStockBalance.formulation"/></th>
-	<th style="width:10px"><spring:message code="inventory.viewStockBalance.frequency"/></th>
-	<th style="width:10px"><spring:message code="inventory.issueDrug.noOfDays"/></th>
-	<th style="width:10px"><spring:message code="inventory.issueDrug.comments"/></th>
-	<th style="width:10px"><spring:message code="inventory.receiptDrug.dateExpiry"/></th>
-	<th style="width:10px"><spring:message code="inventory.issueDrug.quantity"/></th>
-	<th style="width:10px"><spring:message code="inventory.receiptDrug.price" text="Price" /></th>
-	</tr>
-	<c:choose>
-	<c:when test="${not empty listDrugIssue}">
-	<c:set var="total" value="${0}"/>  
-	<c:forEach items="${listDrugIssue}" var="detail" varStatus="varStatus">
-	<%-- <c:set var="price" value="${ detail.quantity* (detail.transactionDetail.unitPrice + 0.01*detail.transactionDetail.VAT*detail.transactionDetail.unitPrice) }" /> --%>
-	<c:set var="price" value="${ detail.quantity * detail.transactionDetail.costToPatient}" />
-	<c:set var="generalVar" value="GENERAL"/>
-	<c:set var="expectantVar" value="EXPECTANT MOTHER"/>
-	<c:set var="tbVar" value="TB PATIENT"/>
-	<c:set var="cccVar" value="CCC PATIENT"/>
-	<c:set var="total" value="${total + price}"/>
-	<tr  align="center" class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
-		<td style="width:10px"><c:out value="${varStatus.count }"/></td>
-		
-		<td style="width:10px">${detail.transactionDetail.drug.name} </td>	
-		<td style="width:10px">${detail.transactionDetail.formulation.name}-${detail.transactionDetail.formulation.dozage}</td>
-		<td style="width:10px">${detail.transactionDetail.frequency.name} </td>	
-		<td style="width:10px">${detail.transactionDetail.noOfDays} </td>	
-		<td style="width:10px">${detail.transactionDetail.comments} </td>
-		<td style="width:10px"><openmrs:formatDate date="${detail.transactionDetail.dateExpiry}" type="textbox"/></td>
-		<td style="width:10px">${detail.quantity }</td>
-		<td style="width:10px"><fmt:formatNumber value="${price}" type="number" maxFractionDigits="2"/></td>
-		</tr>
-	</c:forEach>
-	<tr>
-		<td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>
-		<td></td>
-		<c:choose>
-            <c:when test="${ not empty listOfNotDispensedOrder }">
-			<td width="100%"><span class="boxHeader">Drugs not issued</span></td>
-		   </c:when>
-		</c:choose>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-	</tr>
-	<c:forEach items="${listOfNotDispensedOrder}" var="nonDispensed" varStatus="varStatus">
-		<tr  align="center" class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
-		<td style="width:10px"><c:out value="${varStatus.count }"/></td>
-		<td style="width:10px">${nonDispensed.inventoryDrug.name} </td>	
-		<td style="width:10px">${nonDispensed.inventoryDrugFormulation.name}-${nonDispensed.inventoryDrugFormulation.dozage} </td>
-		<td style="width:10px">${nonDispensed.frequency.name}</td>
-		<td style="width:10px">${nonDispensed.noOfDays}</td>
-		<td style="width:10px">${nonDispensed.comments}</td>
-		<td style="width:10px">N.A.</td>
-		<td style="width:10px">N.A.</td>
-		<td style="width:10px">N.A.</td>
-		</tr>
-	</c:forEach>
-	<tr><td>&nbsp;</td></tr>
-	<tr  align="center" class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td><b><spring:message code="inventory.receiptDrug.total" text="Total Price" /></b></td>
-		<td>
-		<c:choose>
-				<c:when test ="${paymentSubCategory == generalVar}">
-					<fmt:formatNumber value="${total}" type="number" maxFractionDigits="2"/>
-				</c:when>
-				<c:when test ="${paymentSubCategory == expectantVar}">
-					<fmt:formatNumber value="${total}" type="number" maxFractionDigits="2"/>
-				</c:when>
-				<c:when test ="${paymentSubCategory == tbVar}">
-					<fmt:formatNumber value="${total}" type="number" maxFractionDigits="2"/>
-				</c:when>
-				<c:when test ="${paymentSubCategory == cccVar}">
-					<fmt:formatNumber value="${total}" type="number" maxFractionDigits="2"/>
-				</c:when>
-				<c:otherwise>
-					<strike><fmt:formatNumber value="${total}" type="number" maxFractionDigits="2"/>
-					</strike>  0.00
-				</c:otherwise>
-			</c:choose>
-		</td>						
-	</tr>	
-	<%-- <tr>
-			<td>Treating Doctor </td>
-			<td><b>:${paymentMode}</b></td>
-		</tr> --%>
-		<tr>
-			<td>Attending Cashier</td>
-			<td><b>:${cashier}</b></td>
-		</tr>
-	</c:when>
-	</c:choose>
-</table>
-</div>
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="inventory.receiptDrug.print" />"   onClick="ISSUE.printDiv('${receiptid}','${flag }');" />
-
-<!-- PRINT DIV -->
-<div style="max-height: 50px; max-width: 1800px;">
-	<b class="boxHeader"></b>
+	<b class="boxHeader">Detail Issue++</b>
 </div>
 
 <div  id="printDiv" style="display: none;  width: 1280px; font-size: 0.8em">
@@ -349,4 +175,3 @@
 <br/><br/><br/><br/><br/><br/>
 <span style="float:right;font-size: 1.5em">Signature of Inventory Clerk/ Stamp</span>
 </div>
-<!-- END PRINT DIV -->   
