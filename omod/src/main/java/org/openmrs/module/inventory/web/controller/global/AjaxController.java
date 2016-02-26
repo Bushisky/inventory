@@ -774,7 +774,7 @@ public class AjaxController {
 					.remove("issueDrug_" + userId);
 		}
 
-		return "redirect:/module/inventory/subStoreIssueDrugList.form";
+		return "redirect:/module/inventory/patientQueueDrugOrder.form";
 	}
 
 	@RequestMapping("/module/inventory/processIssueDrugAccount.form")
@@ -969,6 +969,7 @@ public class AjaxController {
 						.sumStoreItemCurrentQuantity(store.getId(), pDetail
 								.getTransactionDetail().getItem().getId(),
 								specificationId);
+			
 				int t = totalQuantity - pDetail.getQuantity();
 				InventoryStoreItemTransactionDetail itemTransactionDetail = inventoryService
 						.getStoreItemTransactionDetailById(pDetail
@@ -1108,13 +1109,13 @@ public class AjaxController {
 						.sumStoreItemCurrentQuantity(store.getId(), pDetail
 								.getTransactionDetail().getItem().getId(),
 								specificationId);
-				int t = totalQuantity - pDetail.getQuantity();
+				int t = totalQuantity;
 				InventoryStoreItemTransactionDetail itemTransactionDetail = inventoryService
 						.getStoreItemTransactionDetailById(pDetail
 								.getTransactionDetail().getId());
 				pDetail.getTransactionDetail().setCurrentQuantity(
-						itemTransactionDetail.getCurrentQuantity()
-								- pDetail.getQuantity());
+						itemTransactionDetail.getCurrentQuantity());
+				
 				inventoryService.saveStoreItemTransactionDetail(pDetail
 						.getTransactionDetail());
 
@@ -1140,7 +1141,7 @@ public class AjaxController {
 				transDetail.setReceiptDate(pDetail.getTransactionDetail()
 						.getReceiptDate());
 				transDetail.setCreatedOn(date1);
-
+                
 				// -------------
 				// Money moneyUnitPrice = new
 				// Money(pDetail.getTransactionDetail().getUnitPrice());
@@ -1189,7 +1190,7 @@ public class AjaxController {
 					.remove("issueItemPatient_" + userId);
 		}
 
-		return "redirect:/module/inventory/subStoreIssueItemPatientList.form";
+		return "redirect:/module/inventory/subStoreIssueItem.form";
 	}
 
 	@RequestMapping("/module/inventory/viewStockBalanceDetail.form")
@@ -1276,13 +1277,7 @@ public class AjaxController {
 		InventoryStoreDrugPatient inventoryStoreDrugPatient = new InventoryStoreDrugPatient();
 		
 		if ( inventoryStoreDrugPatient != null && listDrugIssue != null && listDrugIssue.size() > 0) {
-		inventoryStoreDrugPatient.setStore(store);
 		
-		
-		
-		inventoryStoreDrugPatient.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
-	
-		inventoryStoreDrugPatient = inventoryService.saveStoreDrugPatient(inventoryStoreDrugPatient);
 		
 		InventoryStoreDrugTransaction transaction = new InventoryStoreDrugTransaction();
 		transaction.setDescription("ISSUE DRUG TO PATIENT "+DateUtils.getDDMMYYYY());
@@ -1362,7 +1357,7 @@ public class AjaxController {
 			transDetail.setParent(pDetail.getTransactionDetail());
 			transDetail = inventoryService
 					.saveStoreDrugTransactionDetail(transDetail);
-		
+			 
 			
    
 		}
@@ -1478,13 +1473,7 @@ public class AjaxController {
 		InventoryStoreDrugPatient inventoryStoreDrugPatient = new InventoryStoreDrugPatient();
 	  
 		if ( inventoryStoreDrugPatient != null && listDrugIssue != null && listDrugIssue.size() > 0) {
-		inventoryStoreDrugPatient.setStore(store);
 		
-		
-		
-		inventoryStoreDrugPatient.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
-	
-		inventoryStoreDrugPatient = inventoryService.saveStoreDrugPatient(inventoryStoreDrugPatient);
 		
 		InventoryStoreDrugTransaction transaction = new InventoryStoreDrugTransaction();
 		transaction.setDescription("ISSUE DRUG TO PATIENT "+DateUtils.getDDMMYYYY());
@@ -1570,7 +1559,12 @@ public class AjaxController {
 			// save issue to patient detail
 			inventoryService.saveStoreDrugPatientDetail(pDetail);
 			
-
+             if(transDetail.getFlag()==1)
+             {   
+            	 inventoryStoreDrugPatient=inventoryService.getStoreDrugPatientById(pDetail.getStoreDrugPatient().getId());
+            	 inventoryStoreDrugPatient.setStatuss(1);
+            	
+             }
 		
          
 		}
@@ -1664,7 +1658,8 @@ public class AjaxController {
 	        }
 		}
 
-		}
+		}  
+		    
 		return "/module/inventory/substore/subStoreIssueDrugDeduct";
 	}
 	@RequestMapping("/module/inventory/subStoreIssueDrugAccountDettail.form")
@@ -1710,8 +1705,54 @@ public class AjaxController {
 		
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
+		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 		List<InventoryStoreItemPatientDetail> listItemIssue = inventoryService
 				.listStoreItemPatientDetail(issueId);
+		
+		
+		InventoryStoreItemPatient inventoryStoreItemPatient = new InventoryStoreItemPatient();
+		if ( inventoryStoreItemPatient != null && listItemIssue != null && listItemIssue.size() > 0) {
+		
+			
+			InventoryStoreItemTransaction transaction = new InventoryStoreItemTransaction();
+			transaction.setDescription("ISSUE DRUG TO PATIENT "+DateUtils.getDDMMYYYY());
+			transaction.setStore(store);
+			transaction.setTypeTransaction(ActionValue.TRANSACTION[1]);
+			
+			transaction.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
+			
+			transaction = inventoryService.saveStoreItemTransaction(transaction);
+			for (InventoryStoreItemPatientDetail pDetail : listItemIssue)
+			{  
+				
+				Date date1 = new Date();
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Integer totalQuantity = inventoryService.sumStoreItemCurrentQuantity(store.getId(), pDetail
+								.getTransactionDetail().getItem().getId(),
+								pDetail.getTransactionDetail().getSpecification()
+										.getId());
+				int t = totalQuantity;
+				Integer receipt=pDetail.getStoreItemPatient().getId();
+				model.addAttribute("receiptid", receipt);
+				InventoryStoreItemTransactionDetail inventoryStoreItemTransactionDetail  = inventoryService
+						.getStoreItemTransactionDetailById(pDetail.getTransactionDetail().getParent().getId());
+				
+				InventoryStoreItemTransactionDetail itemTransactionDetail = inventoryService.getStoreItemTransactionDetailById(inventoryStoreItemTransactionDetail.getId());
+				
+				inventoryStoreItemTransactionDetail.setCurrentQuantity(itemTransactionDetail.getCurrentQuantity());
+				
+				Integer flags =pDetail.getTransactionDetail().getFlag();
+				model.addAttribute("flag", flags);
+				inventoryService.saveStoreItemTransactionDetail( inventoryStoreItemTransactionDetail);
+				
+				
+			}
+		}
 		model.addAttribute("listItemPatientIssue", listItemIssue);
 		if (CollectionUtils.isNotEmpty(listItemIssue)) {
 
@@ -1771,6 +1812,153 @@ public class AjaxController {
 	     
 		}
 		return "/module/inventory/substoreItem/subStoreIssueItemPatientDettail";
+	}
+	@RequestMapping("/module/inventory/subStoreIssueItemDeduct.form")
+	public String viewItemDeduct(
+			@RequestParam(value = "receiptid", required = false) Integer receiptid,
+			@RequestParam(value = "flag", required = false) Integer flag,
+			Model model) {
+		InventoryService inventoryService = (InventoryService) Context
+				.getService(InventoryService.class);
+		
+		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		List<InventoryStoreItemPatientDetail> listItemIssue = inventoryService
+				.listStoreItemPatientDetail(receiptid);
+		
+		InventoryStoreItemPatient inventoryStoreItemPatient = new InventoryStoreItemPatient();
+		if ( inventoryStoreItemPatient != null && listItemIssue != null && listItemIssue.size() > 0) {
+			
+			
+			InventoryStoreItemTransaction transaction = new InventoryStoreItemTransaction();
+			transaction.setDescription("ISSUE DRUG TO PATIENT "+DateUtils.getDDMMYYYY());
+			transaction.setStore(store);
+			transaction.setTypeTransaction(ActionValue.TRANSACTION[1]);
+			
+			transaction.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
+			
+			transaction = inventoryService.saveStoreItemTransaction(transaction);
+			for (InventoryStoreItemPatientDetail pDetail : listItemIssue)
+			{
+				
+				Date date1 = new Date();
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Integer totalQuantity = inventoryService.sumStoreItemCurrentQuantity(store.getId(), pDetail
+								.getTransactionDetail().getItem().getId(),
+								pDetail.getTransactionDetail().getSpecification()
+										.getId());
+				int t = totalQuantity -pDetail.getQuantity();
+               
+				InventoryStoreItemTransactionDetail inventoryStoreItemTransactionDetail  = inventoryService
+						.getStoreItemTransactionDetailById(pDetail.getTransactionDetail().getParent().getId());
+				
+				InventoryStoreItemTransactionDetail itemTransactionDetail = inventoryService.getStoreItemTransactionDetailById(inventoryStoreItemTransactionDetail.getId());
+				
+				inventoryStoreItemTransactionDetail.setCurrentQuantity(itemTransactionDetail.getCurrentQuantity()-pDetail.getQuantity());
+				
+				inventoryService.saveStoreItemTransactionDetail( inventoryStoreItemTransactionDetail);
+
+				
+				
+				
+				
+				//inventoryService.saveStoreItemTransactionDetail( inventoryStoreItemTransactionDetail);
+				InventoryStoreItemTransactionDetail transDetail = new InventoryStoreItemTransactionDetail();
+				transDetail.setTransaction(transaction);
+				transDetail.setCurrentQuantity(0);
+				transDetail.setIssueQuantity(pDetail.getQuantity());
+				transDetail.setOpeningBalance(totalQuantity);
+				transDetail.setClosingBalance(t);
+				transDetail.setQuantity(0);
+				transDetail.setVAT(pDetail.getTransactionDetail().getVAT());
+				transDetail.setCostToPatient(pDetail.getTransactionDetail().getCostToPatient());
+				transDetail.setUnitPrice(pDetail.getTransactionDetail()
+						.getUnitPrice());
+				transDetail.setItem(pDetail.getTransactionDetail().getItem());
+				transDetail.setSpecification(pDetail.getTransactionDetail()
+						.getSpecification());
+				transDetail.setCompanyName(pDetail.getTransactionDetail()
+						.getCompanyName());
+				transDetail.setDateManufacture(pDetail.getTransactionDetail()
+						.getDateManufacture());
+				transDetail.setReceiptDate(pDetail.getTransactionDetail()
+						.getReceiptDate());
+				transDetail.setCreatedOn(date1);
+				transDetail.setFlag(1);
+				transDetail.setParent(pDetail.getTransactionDetail());
+				transDetail.setAttribute(pDetail.getTransactionDetail().getAttribute());
+				
+				BigDecimal moneyUnitPrice = pDetail.getTransactionDetail().getCostToPatient().multiply(new BigDecimal(pDetail.getQuantity()));
+				
+				transDetail.setTotalPrice(moneyUnitPrice);
+	            
+	           
+				transDetail.setParent(pDetail.getTransactionDetail());
+				transDetail = inventoryService.saveStoreItemTransactionDetail(transDetail);
+				pDetail.setQuantity( pDetail.getQuantity());
+				//pDetail.setItemAccount(issueItemAccount);
+				pDetail.setTransactionDetail(transDetail);
+				inventoryService.saveStoreItemPatientDetail(pDetail);
+				if(transDetail.getFlag()==1)
+				{ 
+					inventoryStoreItemPatient=inventoryService.getStoreItemPatientById(pDetail.getStoreItemPatient().getId());
+					
+					inventoryStoreItemPatient.setStatuss(1);
+					
+				
+					
+				}
+				
+				
+			}
+		}
+		model.addAttribute("listItemPatientIssue", listItemIssue);
+		if (CollectionUtils.isNotEmpty(listItemIssue)) {
+
+			model.addAttribute("issueItemPatient", listItemIssue.get(0)
+					.getStoreItemPatient());
+			model.addAttribute("date", listItemIssue.get(0)
+					.getStoreItemPatient().getCreatedOn());
+			model.addAttribute("age", listItemIssue.get(0)
+					.getStoreItemPatient().getPatient().getAge());
+			if(listItemIssue.get(0)
+					.getStoreItemPatient().getPatient().getGender().equals("M")){
+				model.addAttribute("gender", "Male");
+			}
+			if(listItemIssue.get(0)
+					.getStoreItemPatient().getPatient().getGender().equals("F")){
+				model.addAttribute("gender", "Female");
+			}
+			model.addAttribute("cashier", listItemIssue.get(0)
+					.getStoreItemPatient().getCreatedBy());
+			/*model.addAttribute("paymentMode", listItemIssue.get(0)
+					.getTransactionDetail().getTransaction().getPaymentMode());*/
+			HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
+			List<PersonAttribute> pas = hcs.getPersonAttributes(listItemIssue.get(0)
+					.getStoreItemPatient().getPatient().getId());
+	        for (PersonAttribute pa : pas) {
+	            PersonAttributeType attributeType = pa.getAttributeType(); 
+	            PersonAttributeType personAttributePCT=hcs.getPersonAttributeTypeByName("Paying Category Type");
+	            PersonAttributeType personAttributeNPCT=hcs.getPersonAttributeTypeByName("Non-Paying Category Type");
+	            PersonAttributeType personAttributeSSCT=hcs.getPersonAttributeTypeByName("Special Scheme Category Type");
+	            if(attributeType.getPersonAttributeTypeId()==personAttributePCT.getPersonAttributeTypeId()){
+	            	model.addAttribute("paymentSubCategory",pa.getValue()); 
+	            }
+	            else if(attributeType.getPersonAttributeTypeId()==personAttributeNPCT.getPersonAttributeTypeId()){
+	            	 model.addAttribute("paymentSubCategory",pa.getValue()); 
+	            }
+	            else if(attributeType.getPersonAttributeTypeId()==personAttributeSSCT.getPersonAttributeTypeId()){
+	            	model.addAttribute("paymentSubCategory",pa.getValue()); 
+	            }
+	        
+		
+	        }
+		}
+		return "/module/inventory/substoreItem/subStoreIssueItemDeduct";
 	}
 
 	@RequestMapping("/module/inventory/subCatByCat.form")

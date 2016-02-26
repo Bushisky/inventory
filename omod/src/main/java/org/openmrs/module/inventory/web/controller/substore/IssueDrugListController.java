@@ -1,20 +1,25 @@
 package org.openmrs.module.inventory.web.controller.substore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Obs;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
+import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.util.PagingUtil;
 import org.openmrs.module.inventory.util.RequestUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +35,7 @@ public class IssueDrugListController {
             @RequestParam(value="fromDate",required=false)  String fromDate,
             @RequestParam(value="toDate",required=false)  String toDate,
             @RequestParam(value="receiptId",required=false)  Integer receiptId,
-            Map<String, Object> model, HttpServletRequest request
+            Map<String, Object> model, HttpServletRequest request,Model models
 	) {
 		
 		 InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
@@ -41,6 +46,8 @@ public class IssueDrugListController {
 	}*/
 	
 	 int total = inventoryService.countStoreDrugPatient(store.getId(), issueName, fromDate, toDate);
+	 
+	 
 	 String temp = "";
 		
 		if(issueName != null){	
@@ -74,6 +81,19 @@ public class IssueDrugListController {
 		
 		PagingUtil pagingUtil = new PagingUtil( RequestUtil.getCurrentLink(request)+temp , pageSize, currentPage, total );
 		List<InventoryStoreDrugPatient> listIssue = inventoryService.listStoreDrugPatient(store.getId(),receiptId, issueName,fromDate, toDate, pagingUtil.getStartPos(), pagingUtil.getPageSize());
+		
+		 for(InventoryStoreDrugPatient in :listIssue)
+		 {  
+		 
+		 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		 String created =  sdf.format(in.getCreatedOn());
+		 String changed = sdf.format(new Date());
+		 int  value= changed.compareTo(created);
+		  in.setValues(value);
+		  in=inventoryService.saveStoreDrugPatient(in);
+		   
+		 }
+		
 		model.put("issueName", issueName );
 		model.put("receiptId", receiptId );
 		model.put("toDate", toDate );

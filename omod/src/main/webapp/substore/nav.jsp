@@ -19,18 +19,26 @@
 --%> 
 <%@ include file="../includes/js_css.jsp" %>
 <br/>
+<center><openmrs:hasPrivilege privilege="Add/Edit substore"><b>Drug&nbsp;| <a href="#" onclick="ACT.go('subStoreIssueItem.form');">Item </a></b></openmrs:hasPrivilege></center>
+<center><openmrs:hasPrivilege privilege="Drug/Item Dispense"><b>Drug&nbsp;| <a href="#" onclick="ACT.go('subStoreIssueItemPatientList.form');">Item </a></b></openmrs:hasPrivilege></center>
 
-<center><b>Drug&nbsp;| <a href="#" onclick="ACT.go('subStoreIssueItemPatientList.form');">Item </a></b></center>
+<br/><br/>
+
+
+
+
+<openmrs:hasPrivilege privilege="Drug order queue"><b><a href="#" onclick="ACT.go('patientQueueDrugOrder.form');"><spring:message code="inventory.substore.patientQueueForDrugOrders"/></a></b></openmrs:hasPrivilege>
+<openmrs:hasPrivilege privilege="Drug/Item Dispense"><b><a href="#" onclick="ACT.go('subStoreIssueDrugList.form');"><spring:message code="inventory.substore.listDrugPatient"/></a></b></openmrs:hasPrivilege>&nbsp;
+<openmrs:hasPrivilege privilege="Add/Edit substore">|&nbsp;<b><a href="#" onclick="ACT.go('subStoreListPatient.form');"><spring:message code="inventory.substore.listPatient"/></a></b></openmrs:hasPrivilege>&nbsp;
+<openmrs:hasPrivilege privilege="Add/Edit substore">|&nbsp;<b><a href="#" onclick="ACT.go('subStoreIssueDrugForm.form');"><spring:message code="inventory.substore.issueDrugPatient"/></a></b></openmrs:hasPrivilege>&nbsp;
+<openmrs:hasPrivilege privilege="Add/Edit substore">|&nbsp;<b><a href="#" onclick="ACT.go('subStoreIssueDrugAccountList.form');"><spring:message code="inventory.substore.issueDrugAccount"/></a></b></openmrs:hasPrivilege>&nbsp;
+<openmrs:hasPrivilege privilege="Add/Edit substore">|&nbsp;<b><a href="#" onclick="ACT.go('subStoreIndentDrugList.form');"><spring:message code="inventory.substore.indentDrug"/></a></b></openmrs:hasPrivilege>&nbsp;
+<openmrs:hasPrivilege privilege="Add/Edit substore">|&nbsp;<b><a href="#" onclick="ACT.go('viewStockBalanceSubStore.form');"><spring:message code="inventory.viewStockBalance"/></a></b></openmrs:hasPrivilege>&nbsp;
+<openmrs:hasPrivilege privilege="Add/Edit substore">|&nbsp;<b><a href="#" onclick="ACT.go('viewStockBalanceExpiry.form');"><spring:message code="inventory.viewStockBalanceExpiry"/></a></b></openmrs:hasPrivilege>&nbsp;
 <br/><br/>
 
 <!--  15-june-2013 New Requirement #1636 User is able to see and dispense drugs in patient queue for issuing drugs, as ordered from dashboard -->
 <!--  17-Nov-2014 In order to change the order of the sub menues-->
-<b><a href="#" onclick="ACT.go('patientQueueDrugOrder.form');"><spring:message code="inventory.substore.patientQueueForDrugOrders"/></a></b>&nbsp;|
-<b><a href="#" onclick="ACT.go('subStoreIssueDrugList.form');"><spring:message code="inventory.substore.issueDrugPatient"/></a></b>&nbsp;|
-<b><a href="#" onclick="ACT.go('subStoreIssueDrugAccountList.form');"><spring:message code="inventory.substore.issueDrugAccount"/></a></b>&nbsp;|
-<b><a href="#" onclick="ACT.go('subStoreIndentDrugList.form');"><spring:message code="inventory.substore.indentDrug"/></a></b>&nbsp;|
-<b><a href="#" onclick="ACT.go('viewStockBalanceSubStore.form');"><spring:message code="inventory.viewStockBalance"/></a></b>&nbsp;|
-<b><a href="#" onclick="ACT.go('viewStockBalanceExpiry.form');"><spring:message code="inventory.viewStockBalanceExpiry"/></a></b>&nbsp;
-<br/><br/>
+
 
 

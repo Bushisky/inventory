@@ -20,9 +20,9 @@
 --%>
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <openmrs:require privilege="Add/Edit substore" otherwise="/login.htm"
 	redirect="/module/inventory/main.form" />
+
 <spring:message var="pageTitle" code="inventory.issueDrug.manage"
 	scope="page" />
 <%@ include file="/WEB-INF/template/header.jsp"%>
@@ -174,7 +174,7 @@ function getValue()
 			<input type="button"
 				class="ui-button ui-widget ui-state-default ui-corner-all"
 				value="<spring:message code="inventory.back"/>"
-				onclick="ACT.go('subStoreIssueDrugList.form');">
+				onclick="ACT.go('patientQueueDrugOrder.form');">
 		</form>
 	</div>
 </div>

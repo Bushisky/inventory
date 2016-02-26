@@ -734,6 +734,30 @@ ISSUE={
 		}
          
 		},
+		printDivItem : function(receiptid,flag)
+		{ jQuery("div#printDiv").printArea({mode:"popup",popClose:true,popTitle: "Support by HISP india(hispindia.org)"});
+		var ids=receiptid;
+		  var f= flag;   
+		
+		
+         if(f==0)
+        	 {
+        		if(SESSION.checkSession()){
+					var data = jQuery.ajax(
+							{ 
+								type:"GET"
+								,url: "subStoreIssueItemDeduct.form"
+								,data: ({ receiptid :ids, flag :f})	
+								,async: false
+								, cache : false
+							}).responseText;
+					
+        		}
+			 
+			 
+		}
+         
+		},
 		onBlurDrug : function(thiz)
 		{
 			var x = jQuery(thiz).val();

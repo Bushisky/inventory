@@ -22,9 +22,7 @@
 <%@ include file="../includes/js_css.jsp" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <openmrs:globalProperty var="userLocation" key="hospital.location_user" defaultValue="false"/>
-<script type="text/javascript">
-String cat="General";
-</script>
+
 		<style>
 @media print {
 	.donotprint {
@@ -80,7 +78,7 @@ String cat="General";
 </table>
 </div>
 
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="inventory.receiptItem.print"/>" onClick="INDENT.printDiv();" />
+<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="inventory.receiptItem.print"/>" onClick="ISSUE.printDivItem('${receiptid}','${flag }');" />
 
 <!-- PRINT DIV -->
 <div  id="printDiv" style="display: none; ">        		

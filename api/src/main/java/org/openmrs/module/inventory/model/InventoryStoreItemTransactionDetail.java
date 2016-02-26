@@ -48,7 +48,7 @@ public class InventoryStoreItemTransactionDetail implements  Serializable , Comp
 	 private Date createdOn;
 	 private long openingBalance;
 	 private long closingBalance;
-	 
+	 private Integer flag;
 	 private InventoryStoreItemTransactionDetail parent;
 	 private Set<InventoryStoreItemTransactionDetail> subDetails;
 	 
@@ -210,6 +210,14 @@ public class InventoryStoreItemTransactionDetail implements  Serializable , Comp
 
 	public void setPatientType(String patientType) {
 		this.patientType = patientType;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
 	}
 
 	

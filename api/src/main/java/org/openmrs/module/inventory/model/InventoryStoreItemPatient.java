@@ -37,7 +37,15 @@ public class InventoryStoreItemPatient implements  Serializable {
 	 private String createdBy;
 	 private Patient patient;
 	 private String identifier;
-	 //private String patientCategory;
+	 private Integer values;
+	 private Integer statuss;
+	 public Integer getValues() {
+		return values;
+	}
+	public void setValues(Integer values) {
+		this.values = values;
+	}
+	//private String patientCategory;
 	public Integer getId() {
 		return id;
 	}
@@ -86,6 +94,12 @@ public class InventoryStoreItemPatient implements  Serializable {
 	}
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+	public Integer getStatuss() {
+		return statuss;
+	}
+	public void setStatuss(Integer statuss) {
+		this.statuss = statuss;
 	}
 	 
 	 

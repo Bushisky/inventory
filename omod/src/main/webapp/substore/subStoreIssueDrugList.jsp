@@ -18,8 +18,8 @@
  *
 --%> 
 <%@ include file="/WEB-INF/template/include.jsp" %>
+<openmrs:require privilege="Drug/Item Dispense" otherwise="/login.htm" redirect="/module/inventory/main.form" />
 
-<openmrs:require privilege="Add/Edit substore" otherwise="/login.htm" redirect="/module/inventory/main.form" />
 <spring:message var="pageTitle" code="inventory.issueDrug.manage" scope="page"/>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="nav.jsp" %>
@@ -28,7 +28,7 @@
 <c:forEach items="${errors.allErrors}" var="error">
 	<span class="error"><spring:message code="${error.defaultMessage}" text="${error.defaultMessage}"/></span><
 </c:forEach>
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code='inventory.issueDrug.add'/>" onclick="ACT.go('subStoreIssueDrugForm.form');"/>
+
 <br /><br />
 
 <form method="get"  id="form">
@@ -49,10 +49,11 @@
 </table>
 <br />
 <span class="boxHeader"><spring:message code="inventory.issueDrug.list"/></span>
+
 <div class="box">
 <table width="100%" cellpadding="5" cellspacing="0">
 	<tr>
-	<th>S.No</th>
+	<th>S.No </th>
 	<th>Receipt No.</th>
 	<th><spring:message code="inventory.issueDrug.identifier"/></th>
     <th>Drug Regimen</th>
@@ -62,9 +63,12 @@
 	<th><spring:message code="inventory.issueDrug.createdOn"/></th>
 	</tr>
 	<c:choose>
-	<c:when test="${not empty listIssue}">
+	<c:when test="${(not empty listIssue)  }">
 	<c:forEach items="${listIssue}" var="issue" varStatus="varStatus">
+	<c:choose>
+	<c:when test="${(issue.values==0)&&(fromDate==null)&&(toDate==null)}">
 	<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
+	     
 		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>
 		<td> ${issue.id}</td>
 		<td> ${issue.identifier}</td>
@@ -80,10 +84,49 @@
         <td><center>${issue.patient.gender }</center></td>
 		<td><openmrs:formatDate date="${issue.createdOn}" type="textbox"/></td>
 		</tr>
-	</c:forEach>
-	</c:when>
+		</c:when>
+		<c:when test="${(issue.values==0)&&(not empty fromDate )&&(not empty toDate)}">
+	<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
+	     
+		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>
+		<td> ${issue.id}</td>
+		<td> ${issue.identifier}</td>
+       	<td> <a href="#" title="Detail issue drug to this patient" onclick="ISSUE.detailIssueDrug('${issue.id}');">View/Print</a> </td>
+		<td>${issue.patient.givenName}&nbsp;${issue.patient.familyName}&nbsp;${fn:replace(issue.patient.middleName,","," ")}</td>
+		<td><center>
+              	<c:choose>
+              		<c:when test="${issue.patient.age == 0  }">&lt 1</c:when>
+              		<c:otherwise >${issue.patient.age }</c:otherwise>
+              	</c:choose>
+              	</center>
+        </td>	
+        <td><center>${issue.patient.gender }</center></td>
+		<td><openmrs:formatDate date="${issue.createdOn}" type="textbox"/></td>
+		</tr>
+		</c:when>
+		<c:when test="${(issue.values!=0)&&(not empty fromDate )&&(not empty toDate)}">
+	<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
+	     
+		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>
+		<td> ${issue.id}</td>
+		<td> ${issue.identifier}</td>
+       	<td> <a href="#" title="Detail issue drug to this patient" onclick="ISSUE.detailIssueDrug('${issue.id}');">View/Print</a> </td>
+		<td>${issue.patient.givenName}&nbsp;${issue.patient.familyName}&nbsp;${fn:replace(issue.patient.middleName,","," ")}</td>
+		<td><center>
+              	<c:choose>
+              		<c:when test="${issue.patient.age == 0  }">&lt 1</c:when>
+              		<c:otherwise >${issue.patient.age }</c:otherwise>
+              	</c:choose>
+              	</center>
+        </td>	
+        <td><center>${issue.patient.gender }</center></td>
+		<td><openmrs:formatDate date="${issue.createdOn}" type="textbox"/></td>
+		</tr>
+		</c:when>
 	</c:choose>
-	
+	</c:forEach>
+</c:when>
+</c:choose>
 	<tr class="paging-container">
 	<td colspan="5"><%@ include file="../paging.jsp" %></td>
 </tr>

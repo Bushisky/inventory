@@ -18,5 +18,7 @@
 		<property name="identifier" column="identifier"  />
 		<property name="createdBy" column="created_by"  />
 		<property name="createdOn" column="created_on"  />	
+		<property name="values" column="value_id"  />	
+		<property name="statuss" column="status_id"  />	
 	</class>
 </hibernate-mapping>

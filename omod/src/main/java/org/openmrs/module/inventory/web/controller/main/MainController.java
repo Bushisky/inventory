@@ -15,6 +15,7 @@ package org.openmrs.module.inventory.web.controller.main;
 
 import java.util.ArrayList;
 
+import org.openmrs.Privilege;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
@@ -35,14 +36,14 @@ public class MainController {
 	 @RequestMapping(method = RequestMethod.GET)
 		public String firstView( Model model) {
 		 InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
-		 try {
+		 try { 
 			 InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 			 if(store != null){
 				 if( store.getParentStores().isEmpty() && !store.getRetired()){
 					 return "redirect:/module/inventory/viewStockBalance.form";
-				 }else if( !store.getParentStores().isEmpty() && store.getIsDrug() == 1 && !store.getRetired() ){
+				 }else if( !store.getParentStores().isEmpty()&&store.getRole().hasPrivilege("Drug order queue") && !store.getRetired() ){
 					 return "redirect:/module/inventory/patientQueueDrugOrder.form";
-				 }else if( !store.getParentStores().isEmpty() && store.getIsDrug() == 2 && !store.getRetired() ){
+				 }else if( !store.getParentStores().isEmpty()&&store.getRole().hasPrivilege("Drug/Item Dispense")  && !store.getRetired() ){
 					// return "redirect:/module/inventory/itemViewStockBalanceSubStore.form";
                                      //17/11/2014  In order to get the Drug Windows first
                                      return "redirect:/module/inventory/subStoreIssueDrugList.form";

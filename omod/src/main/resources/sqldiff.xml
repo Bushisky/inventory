@@ -263,5 +263,64 @@
                         `comments` VARCHAR(200) DEFAULT NULL);
 		</sql>
 	</diff>
-	
+	<diff>
+		<version>2.3.7</version>
+		<author>Admin</author>
+		<date>Feb 22, 2016</date>
+		<description>
+			to add new field
+		</description>
+		<sql>
+			ALTER  TABLE inventory_store_drug_patient ADD COLUMN `value_id` INT(11) DEFAULT NULL;
+                      
+		</sql>
+	</diff>
+	<diff>
+		<version>2.3.8</version>
+		<author>Admin</author>
+		<date>Feb 22, 2016</date>
+		<description>
+			to add new field
+		</description>
+		<sql>
+			ALTER  TABLE inventory_store_item_patient ADD COLUMN `value_id` INT(11) DEFAULT NULL;
+                      
+		</sql>
+	</diff>
+	<diff>
+		<version>2.3.9</version>
+		<author>Admin</author>
+		<date>Feb 22, 2016</date>
+		<description>
+			Add column flag  in inventory_store_item_transaction_detail table 
+		</description>
+		<sql>
+			ALTER TABLE inventory_store_item_transaction_detail ADD flag integer;
+				
+		</sql>
+	</diff>	
+	<diff>
+		<version>2.4.0</version>
+		<author>Admin</author>
+		<date>Feb 25, 2016</date>
+		<description>
+			Add column status  in inventory_store_drug_patient table 
+		</description>
+		<sql>
+			ALTER TABLE inventory_store_drug_patient ADD COLUMN `status_id` INT(11) DEFAULT NULL;
+				
+		</sql>
+	</diff>	
+	<diff>
+		<version>2.4.1</version>
+		<author>Admin</author>
+		<date>Feb 25, 2016</date>
+		<description>
+			Add column status  in inventory_store_item_patient table 
+		</description>
+		<sql>
+			ALTER TABLE inventory_store_item_patient ADD COLUMN `status_id` INT(11) DEFAULT NULL;
+				
+		</sql>
+	</diff>	
 </sqldiff>

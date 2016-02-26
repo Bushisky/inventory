@@ -71,7 +71,7 @@
 	<tr>
 		<td><spring:message code="inventory.item.specification"/></td>
 		<td><spring:bind path="item.specifications">
-			<select ${not empty  delete? 'disabled="disabled"' : ''} name="${status.expression }" id="${status.expression }" multiple="multiple" size="10" style="width:150px">
+			<select  name="${status.expression}" id="${status.expression}"  multiple="multiple"  size="10" style="width:150px">
 				<c:forEach items="${specifications}" var="sSpecification">
 					<option value="${sSpecification.id}"
 						<c:forEach items="${status.value}" var="specification">
@@ -81,7 +81,7 @@
 					</option>
 				</c:forEach>
 			</select>
-			${not empty  delete? 'Specification field is read only in this case' : ''}
+			${not empty add ? 'Please do not remove the selected option':'Please do not remove the selected option' }
 			<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>

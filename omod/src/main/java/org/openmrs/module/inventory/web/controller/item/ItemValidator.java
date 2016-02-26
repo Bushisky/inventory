@@ -35,11 +35,11 @@ public class ItemValidator {
     	InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
     	InventoryItem itemE = inventoryService.getItemByName(item.getName());
     	if(item.getId() != null){
-    		int  countItemInTransactionDetail = inventoryService.checkExistItemTransactionDetail(item.getId());
+    	/*	int  countItemInTransactionDetail = inventoryService.checkExistItemTransactionDetail(item.getId());
 			int  countItemInIndentDetail = inventoryService.checkExistItemIndentDetail(item.getId());
 			if(countItemInIndentDetail > 0 ||  countItemInTransactionDetail > 0){
     			item.setSpecifications(inventoryService.getItemById(item.getId()).getSpecifications());
-			}
+			}*/
     		if(itemE != null){
     			if(itemE.getId().intValue() != item.getId().intValue()){
     				error.reject("inventory.item.name.existed");

@@ -1,6 +1,8 @@
 package org.openmrs.module.inventory.web.controller.substoreItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
 import org.openmrs.module.hospitalcore.util.PagingUtil;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreItemPatient;
@@ -73,6 +76,18 @@ public class IssueItemPatientListController {
 		
 		PagingUtil pagingUtil = new PagingUtil( RequestUtil.getCurrentLink(request)+temp , pageSize, currentPage, total );
 		List<InventoryStoreItemPatient> listIssue = inventoryService.listStoreItemPatient(store.getId(),receiptId, issueName,fromDate, toDate, pagingUtil.getStartPos(), pagingUtil.getPageSize());
+		for(InventoryStoreItemPatient in :listIssue)
+		 {  
+			
+		 
+		 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		 String created =  sdf.format(in.getCreatedOn());
+		 String changed = sdf.format(new Date());
+		 int  value= changed.compareTo(created);
+		  in.setValues(value);
+		  in=inventoryService.saveStoreItemPatient(in);
+		   
+		 }
 		model.put("issueName", issueName );
 		model.put("receiptId", receiptId );
 		model.put("toDate", toDate );

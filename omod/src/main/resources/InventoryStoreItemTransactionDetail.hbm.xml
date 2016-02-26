@@ -35,6 +35,7 @@
 		<property name="closingBalance" column="closing_balance"  />
 		<property name="attribute" column="attribute"  />
 		<property name="patientType" column="patient_type"  />
+		<property name="flag" column="flag"  />
 		
 		<many-to-one name="parent" class="org.openmrs.module.inventory.model.InventoryStoreItemTransactionDetail"
 	        column="parent_id"  lazy="false" />	 

@@ -18,8 +18,8 @@
  *
 --%> 
 <%@ include file="/WEB-INF/template/include.jsp" %>
+<openmrs:require privilege="Drug/Item Dispense" otherwise="/login.htm" redirect="/module/inventory/main.form" />
 
-<openmrs:require privilege="Add/Edit substore" otherwise="/login.htm" redirect="/module/inventory/main.form" />
 <spring:message var="pageTitle" code="inventory.issueItem.manage" scope="page"/>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="nav.jsp" %>
@@ -28,7 +28,7 @@
 <c:forEach items="${errors.allErrors}" var="error">
 	<span class="error"><spring:message code="${error.defaultMessage}" text="${error.defaultMessage}"/></span><
 </c:forEach>
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code='inventory.issueItemPatient.add'/>" onclick="ACT.go('subStoreIssueItemPatientForm.form');"/>
+
 <br /><br />
 
 <form method="get"  id="form">
@@ -62,6 +62,8 @@
 	<c:choose>
 	<c:when test="${not empty listIssue}">
 	<c:forEach items="${listIssue}" var="issue" varStatus="varStatus">
+	<c:choose>
+	<c:when test="${(issue.values==0)&&(fromDate==null)&&(toDate==null)}" >
 	<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
 		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>
 		<td> ${issue.id}</td>
@@ -75,6 +77,38 @@
         </td>	
 		<td><openmrs:formatDate date="${issue.createdOn}" type="textbox"/></td>
 		</tr>
+		</c:when>
+		<c:when test="${(issue.values==0)&&(not empty fromDate )&&(not empty toDate)}" >
+		<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
+		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>
+		<td> ${issue.id}</td>
+		<td> <a href="#" title="Detail issue Item to this patient" onclick="ISSUE.detailIssueItemPatient('${issue.id}');">${issue.identifier}</a> </td>
+		<td>${issue.patient.givenName}&nbsp;${issue.patient.familyName}&nbsp;${fn:replace(issue.patient.middleName,","," ")}</td>
+		<td>
+              	<c:choose>
+              		<c:when test="${issue.patient.age == 0  }">&lt 1</c:when>
+              		<c:otherwise >${issue.patient.age }</c:otherwise>
+              	</c:choose>
+        </td>	
+		<td><openmrs:formatDate date="${issue.createdOn}" type="textbox"/></td>
+		</tr>
+		</c:when>
+		<c:when test="${(issue.values!=0)&&(not empty fromDate )&&(not empty toDate)}" >
+		<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
+		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>
+		<td> ${issue.id}</td>
+		<td> <a href="#" title="Detail issue Item to this patient" onclick="ISSUE.detailIssueItemPatient('${issue.id}');">${issue.identifier}</a> </td>
+		<td>${issue.patient.givenName}&nbsp;${issue.patient.familyName}&nbsp;${fn:replace(issue.patient.middleName,","," ")}</td>
+		<td>
+              	<c:choose>
+              		<c:when test="${issue.patient.age == 0  }">&lt 1</c:when>
+              		<c:otherwise >${issue.patient.age }</c:otherwise>
+              	</c:choose>
+        </td>	
+		<td><openmrs:formatDate date="${issue.createdOn}" type="textbox"/></td>
+		</tr>
+		</c:when>
+		</c:choose>
 	</c:forEach>
 	</c:when>
 	</c:choose>

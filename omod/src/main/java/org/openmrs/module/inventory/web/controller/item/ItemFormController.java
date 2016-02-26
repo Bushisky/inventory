@@ -49,7 +49,7 @@ Log log = LogFactory.getLog(this.getClass());
 			int  countItemInTransactionDetail = inventoryService.checkExistItemTransactionDetail(item.getId());
 			int  countItemInIndentDetail = inventoryService.checkExistItemIndentDetail(item.getId());
 			if(countItemInIndentDetail > 0 ||  countItemInTransactionDetail > 0){
-				model.addAttribute("delete", "This item is used in receipt or issue , you can't edit it");
+				model.addAttribute("add", "You can edit this drug");
 			}
 			model.addAttribute("item",item);
 		}

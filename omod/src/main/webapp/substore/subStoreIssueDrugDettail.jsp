@@ -194,7 +194,11 @@
 	</c:choose>
 </table>
 </div>
+
+
+
 <input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="inventory.receiptDrug.print" />"   onClick="ISSUE.printDiv('${receiptid}','${flag }');" />
+
 
 <!-- PRINT DIV -->
 <div style="max-height: 50px; max-width: 1800px;">
