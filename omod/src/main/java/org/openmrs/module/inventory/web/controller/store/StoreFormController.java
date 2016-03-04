@@ -51,7 +51,7 @@ public class StoreFormController {
 		List<Action> listIsDrug = ActionValue.getListIsDrug();
 		model.addAttribute("listIsDrug", listIsDrug);
 		return "/module/inventory/store/form";
-	
+	}
 	@ModelAttribute("roles")
 	public List<Role> populateRoles(HttpServletRequest request) {
 
