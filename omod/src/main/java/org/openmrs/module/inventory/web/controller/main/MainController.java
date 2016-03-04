@@ -14,11 +14,13 @@
 package org.openmrs.module.inventory.web.controller.main;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmrs.Privilege;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.InventoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,14 +38,35 @@ public class MainController {
 	 @RequestMapping(method = RequestMethod.GET)
 		public String firstView( Model model) {
 		 InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
+		 
+			List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
+			
 		 try { 
-			 InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+			 
+			 
+			// InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+			 
+			 
 			 if(store != null){
 				 if( store.getParentStores().isEmpty() && !store.getRetired()){
 					 return "redirect:/module/inventory/viewStockBalance.form";
-				 }else if( !store.getParentStores().isEmpty()&&store.getRole().hasPrivilege("Drug order queue") && !store.getRetired() ){
+				 }else if( !store.getParentStores().isEmpty()&&rl.hasPrivilege("Drug order queue") && !store.getRetired() ){
 					 return "redirect:/module/inventory/patientQueueDrugOrder.form";
-				 }else if( !store.getParentStores().isEmpty()&&store.getRole().hasPrivilege("Drug/Item Dispense")  && !store.getRetired() ){
+				 }else if( !store.getParentStores().isEmpty()&&rl.hasPrivilege("Drug/Item Dispense")  && !store.getRetired() ){
 					// return "redirect:/module/inventory/itemViewStockBalanceSubStore.form";
                                      //17/11/2014  In order to get the Drug Windows first
                                      return "redirect:/module/inventory/subStoreIssueDrugList.form";

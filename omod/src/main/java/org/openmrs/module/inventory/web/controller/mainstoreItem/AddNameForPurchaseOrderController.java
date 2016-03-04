@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreItemIndent;
 import org.openmrs.module.inventory.model.InventoryStoreItemIndentDetail;
@@ -32,9 +33,23 @@ public class AddNameForPurchaseOrderController {
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
 		Date date = new Date();
 		int userId = Context.getAuthenticatedUser().getId();
-		InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 		
-		
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		
 		String fowardParam = "itemPurchase_"+userId;
 		List<InventoryStoreItemIndentDetail> list = (List<InventoryStoreItemIndentDetail> )StoreSingleton.getInstance().getHash().get(fowardParam);

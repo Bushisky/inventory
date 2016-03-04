@@ -66,7 +66,8 @@
 			  ${vparent.name} <br>
 			</c:forEach>
 		</td>
-		<td>${store.role.role}</td>
+		<td><c:forEach items="${roless}" var="rol">
+		<c:if test="${store.id==rol.storeid}">${rol.roleName}<br></c:if></c:forEach></td>
 		<td>${store.isDrugName}</td>
 		<td>${store.retired}</td>
 		<td><openmrs:formatDate date="${store.createdOn}" type="textbox"/></td>

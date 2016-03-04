@@ -14,11 +14,14 @@
 package org.openmrs.module.inventory.extension.html;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 //import org.openmrs.module.Extension;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.InventoryConstants;
 import org.openmrs.module.inventory.InventoryService;
 //import org.openmrs.module.web.extension.AdministrationSectionExt;
@@ -53,12 +56,24 @@ public class InventoryHeader extends LinkExt {
 	@Override
 	public String getLabel() {
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
-		InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		
+		List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+		
+		InventoryStoreRoleRelation srl=null;
+		for(Role r: role){
+			if(inventoryService.getStoreRoleByName(r.toString())!=null){
+				srl = inventoryService.getStoreRoleByName(r.toString());	
+			}
+		}
+		InventoryStore s1 =null;
+		if(srl!=null){
+			s1 = inventoryService.getStoreById(srl.getStoreid());
+		}
 		
 		
 		try {
-			if(store!=null && !store.getRetired()){
-				return store.getName();	
+			if(s1!=null && !s1.getRetired()){
+				return s1.getName();	
 			}else{
 				return "";
 			}
@@ -67,7 +82,7 @@ public class InventoryHeader extends LinkExt {
 			e.printStackTrace();
 			
 		}
-		return store.getName();	
+		return s1.getName();	
 	}
 
 	/** 

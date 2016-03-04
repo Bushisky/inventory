@@ -15,6 +15,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugIndent;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreDrug;
@@ -33,7 +34,22 @@ public class ProcessTransferDrugFromGeneralStoreController {
 	public String sendIndent( @RequestParam(value="indentId",required=false)  Integer id,Model model) {
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
 		InventoryStoreDrugIndent indent = inventoryService.getStoreDrugIndentById(id);
-		InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore mainStore =null;
+			if(srl!=null){
+				mainStore = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if(indent != null && indent.getSubStoreStatus() == 2 && indent.getMainStoreStatus() == 1){
 			List<InventoryStoreDrugIndentDetail> listDrugNeedProcess = inventoryService.listStoreDrugIndentDetail(id);
 			Collection<Integer> formulationIds = new ArrayList<Integer>();
@@ -111,7 +127,22 @@ public class ProcessTransferDrugFromGeneralStoreController {
 			formulationIds.add(t.getFormulation().getId());
 			drugIds.add(t.getDrug().getId());
 		}
-		InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore mainStore =null;
+			if(srl!=null){
+				mainStore = inventoryService.getStoreById(srl.getStoreid());
+				System.out.println(mainStore.getName());
+			}
 		List<InventoryStoreDrugTransactionDetail> transactionAvaiableOfMainStore = inventoryService.listStoreDrugAvaiable(mainStore.getId(), drugIds, formulationIds);
 	
 	 

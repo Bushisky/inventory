@@ -32,6 +32,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.model.OpdDrugOrder;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.inventory.InventoryService;
@@ -1035,4 +1036,42 @@ public class InventoryServiceImpl extends BaseOpenmrsService implements Inventor
 	public List<OpdDrugOrder> listOfNotDispensedOrder(Integer patientId,Date date, Encounter encounterId) throws APIException {
 		return dao.listOfNotDispensedOrder(patientId,date,encounterId);
 	}
+
+	@Override
+	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role)
+			throws APIException {
+		return dao.saveStores(role);
+	}
+
+	@Override
+	public List<InventoryStoreRoleRelation> listOfRoleRelation(Integer id,String role) throws APIException {
+		// TODO Auto-generated method stub
+		return dao.listOfRoleRelation(id,role);
+	}
+
+	@Override
+	public InventoryStoreRoleRelation getStoreRoleById(Integer id) {
+		// TODO Auto-generated method stub
+		return dao.getStoreRoleById(id);
+	}
+
+	@Override
+	public InventoryStoreRoleRelation getStoreRoleByName(String name) {
+		// TODO Auto-generated method stub
+		return dao.getStoreRoleByName(name);
+	}
+
+	@Override
+	public List<InventoryStoreRoleRelation> listInventoryStoreRole()
+			throws APIException {
+		// TODO Auto-generated method stub
+		return dao.listInventoryStoreRole();
+	}
+
+	
+
+	
+
+	
+	
 }

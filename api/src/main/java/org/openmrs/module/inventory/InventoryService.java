@@ -31,6 +31,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.model.OpdDrugOrder;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.inventory.model.InventoryItem;
@@ -671,4 +672,13 @@ public interface InventoryService extends OpenmrsService {
 	
 	public List<OpdDrugOrder> listOfNotDispensedOrder(Integer patientId,Date date,Encounter encounterId ) throws APIException;
 	
+	public List<InventoryStoreRoleRelation> listOfRoleRelation(Integer id,String role) throws APIException;
+	public List<InventoryStoreRoleRelation> listInventoryStoreRole() throws APIException;
+	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role) throws APIException;
+
+	public InventoryStoreRoleRelation getStoreRoleById(Integer id);
+
+	
+
+	public InventoryStoreRoleRelation getStoreRoleByName(String name);
 }

@@ -11,6 +11,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugIndent;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.util.Action;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.util.PagingUtil;
@@ -36,9 +37,24 @@ public class SubStoreIndentDrugListController {
 			HttpServletRequest request
 			) {
 		InventoryService inventoryService = Context.getService(InventoryService.class);
-		InventoryStore subStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore subStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 		//System.out.println("id main store controller: "+subStore.getId());
 		//System.out.println("name main store controller: "+subStore.getName());
+		List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+		
+		InventoryStoreRoleRelation srl=null;
+		Role rl = null;
+		for(Role r: role){
+			if(inventoryService.getStoreRoleByName(r.toString())!=null){
+				srl = inventoryService.getStoreRoleByName(r.toString());	
+				rl=r;
+			}
+		}
+		InventoryStore subStore =null;
+		if(srl!=null){
+			subStore = inventoryService.getStoreById(srl.getStoreid());
+			
+		}
 		int total = inventoryService.countSubStoreIndent(subStore.getId(), indentName, statusId, fromDate, toDate);
 		
 		String temp = "";

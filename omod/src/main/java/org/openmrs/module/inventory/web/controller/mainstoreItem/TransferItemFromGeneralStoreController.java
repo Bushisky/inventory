@@ -10,6 +10,7 @@ import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.model.InventoryStoreItemIndent;
 import org.openmrs.module.hospitalcore.util.Action;
 import org.openmrs.module.hospitalcore.util.ActionValue;
@@ -38,9 +39,24 @@ public class TransferItemFromGeneralStoreController {
 			HttpServletRequest request
 			) {
 		InventoryService inventoryService = Context.getService(InventoryService.class);
-		InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 		//System.out.println("id main store controller: "+mainStore.getId());
 		//System.out.println("name main store controller: "+mainStore.getName());
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore mainStore =null;
+			if(srl!=null){
+				mainStore = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		int total = inventoryService.countMainStoreItemIndent(id, mainStore.getId(), storeId, indentName, statusId, fromDate, toDate);
 		
 		String temp = "";

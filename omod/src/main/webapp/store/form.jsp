@@ -19,7 +19,7 @@
 --%> 
 <%@ include file="/WEB-INF/template/include.jsp" %>
 
-<openmrs:require privilege="Add/Edit Store" otherwise="/login.htm" redirect="/module/inventory/store.form" />
+
 
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="../includes/js_css.jsp" %>
@@ -86,31 +86,17 @@
 	<tr>
 		<td valign="top"><spring:message code="inventory.store.role"/><em>*</em></td>
 		<td>
-			<spring:bind path="store.role">
-			<select name="${status.expression}" id="${status.expression}" tabindex="20" >
-				<option value=""><spring:message code="inventory.pleaseSelect"/></option>
+			
+			<select name="rolesss" tabindex="20" multiple>
+				<option value=""></option>
                 <c:forEach items="${roles}" var="rl">
-                    <option value="${rl.role}"  <c:if test="${rl.role == store.role.role}"> selected</c:if> >${rl.role}</option>
+                    <option value="${rl.role}" <c:if test="${rl.role ==store.role.role }"> selected</c:if>>${rl.role}</option>
                 </c:forEach>
    			</select>
-			<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
-			</spring:bind>
+			
 		</td>
 	</tr>
-	<tr>
-		<td valign="top"><spring:message code="inventory.store.isDrug"/><em>*</em></td>
-		<td>
-			<spring:bind path="store.isDrug">
-			<select name="${status.expression}" id="${status.expression}" tabindex="20" >
-				<option value=""><spring:message code="inventory.pleaseSelect"/></option>
-                <c:forEach items="${listIsDrug}" var="dr">
-                    <option value="${dr.id}"  <c:if test="${dr.id == store.isDrug }"> selected</c:if> >${dr.name}</option>
-                </c:forEach>
-   			</select>
-			<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
-			</spring:bind>
-		</td>
-	</tr>
+	
 	<tr>
 		<td><spring:message code="general.retired" /></td>
 		<td>

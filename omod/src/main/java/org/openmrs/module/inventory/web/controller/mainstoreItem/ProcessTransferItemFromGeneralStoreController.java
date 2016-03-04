@@ -12,6 +12,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreItem;
@@ -33,7 +34,22 @@ public class ProcessTransferItemFromGeneralStoreController {
 	public String sendIndent( @RequestParam(value="indentId",required=false)  Integer id,Model model) {
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
 		InventoryStoreItemIndent indent = inventoryService.getStoreItemIndentById(id);
-		InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore mainStore =null;
+			if(srl!=null){
+				mainStore = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if(indent != null && indent.getSubStoreStatus() == 2 && indent.getMainStoreStatus() == 1){
 			List<InventoryStoreItemIndentDetail> listItemNeedProcess = inventoryService.listStoreItemIndentDetail(id);
 			Collection<Integer> specificationIds = new ArrayList<Integer>();
@@ -118,7 +134,22 @@ public class ProcessTransferItemFromGeneralStoreController {
 			}
 			itemIds.add(t.getItem().getId());
 		}
-		InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore mainStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore mainStore =null;
+			if(srl!=null){
+				mainStore = inventoryService.getStoreById(srl.getStoreid());
+				System.out.println(mainStore.getName());
+			}
 		List<InventoryStoreItemTransactionDetail> transactionAvaiableOfMainStore = inventoryService.listStoreItemAvaiable(mainStore.getId(), itemIds, null);
 	
 	 

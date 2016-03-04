@@ -48,6 +48,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.model.OpdDrugOrder;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.util.ActionValue;
@@ -89,7 +90,8 @@ public class HibernateInventoryDAO implements InventoryDAO {
 	private SessionFactory sessionFactory;
 
 	/**
-	 * Set session factory
+	 * Set session factoryfsave
+	 * 
 	 *
 	 * @param sessionFactory
 	 */
@@ -121,7 +123,7 @@ public class HibernateInventoryDAO implements InventoryDAO {
 	public InventoryStore saveStore(InventoryStore store) throws DAOException {
 		return (InventoryStore) sessionFactory.getCurrentSession().merge(store);
 	}
-
+	
 	public int countListStore() throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
 				InventoryStore.class);
@@ -150,7 +152,7 @@ public class HibernateInventoryDAO implements InventoryDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
 				InventoryStore.class);
 		criteria.add(Restrictions.eq("role", role));
-		criteria.setMaxResults(1);
+		
 		List<InventoryStore> list = criteria.list();
 		return CollectionUtils.isEmpty(list) ? null : list.get(0);
 	}
@@ -160,7 +162,7 @@ public class HibernateInventoryDAO implements InventoryDAO {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
 				InventoryStore.class);
 		criteria.add(Restrictions.in("role", roles));
-		criteria.setMaxResults(1);
+		
 		List<InventoryStore> list = criteria.list();
 		return CollectionUtils.isEmpty(list) ? null : list.get(0);
 
@@ -4849,5 +4851,58 @@ public class HibernateInventoryDAO implements InventoryDAO {
 		return list;
 		}
 
+	@Override
+	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role) {
+		// TODO Auto-generated method stub
+		return (InventoryStoreRoleRelation) sessionFactory.getCurrentSession().merge(role);
+	}
 
+	@Override
+	public List<InventoryStoreRoleRelation> listOfRoleRelation(Integer id,String role) {
+		// TODO Auto-generated method stub
+		Criteria criteria = sessionFactory.getCurrentSession()
+				.createCriteria(InventoryStoreRoleRelation.class);
+				
+				
+		
+
+			criteria.add(Restrictions.eq("storeid", id));
+		
+		
+		List<InventoryStoreRoleRelation> list = criteria.list();
+		return list ;
+	}
+
+	@Override
+	public InventoryStoreRoleRelation getStoreRoleById(Integer id) {
+		// TODO Auto-generated method stub
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				InventoryStoreRoleRelation.class);
+		criteria.add(Restrictions.eq("storeid", id));
+		InventoryStoreRoleRelation roleRelation = (InventoryStoreRoleRelation) criteria.uniqueResult();
+		return roleRelation;
+	}
+
+	@Override
+	public InventoryStoreRoleRelation getStoreRoleByName(String name) {
+		// TODO Auto-generated method stub
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				InventoryStoreRoleRelation.class);
+		criteria.add(Restrictions.eq("roleName", name));
+		InventoryStoreRoleRelation list = (InventoryStoreRoleRelation) criteria.uniqueResult();
+		return list;
+	}
+
+	@Override
+	public List<InventoryStoreRoleRelation> listInventoryStoreRole() {
+		// TODO Auto-generated method stub
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+				InventoryStoreRoleRelation.class);
+		List<InventoryStoreRoleRelation> list = criteria.list();
+		return list;
+	}
+
+	
+
+	
 }

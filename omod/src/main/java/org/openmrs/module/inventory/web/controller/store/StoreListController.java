@@ -14,6 +14,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugIndent;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreItemIndent;
 import org.openmrs.module.inventory.model.InventoryStoreItemTransaction;
@@ -76,6 +77,10 @@ public class StoreListController {
 		PagingUtil pagingUtil = new PagingUtil( RequestUtil.getCurrentLink(request) , pageSize, currentPage, total );
 		
 		List<InventoryStore> stores = inventoryService.listInventoryStore(pagingUtil.getStartPos(), pagingUtil.getPageSize());
+		
+		List<InventoryStoreRoleRelation> roles = inventoryService.listInventoryStoreRole();
+		
+		model.put("roless", roles );
 		
 		model.put("stores", stores );
 		

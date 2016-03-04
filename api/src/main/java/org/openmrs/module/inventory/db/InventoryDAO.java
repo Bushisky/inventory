@@ -31,6 +31,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.model.OpdDrugOrder;
 import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.inventory.model.InventoryItem;
@@ -629,5 +630,19 @@ public interface InventoryDAO {
 	public InventoryStoreItemPatientDetail getStoreItemPatientDetailById(Integer id) throws DAOException;
 
 	public List<OpdDrugOrder> listOfNotDispensedOrder(Integer patientId,Date date, Encounter encounterId) throws DAOException;
+
+	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role);
+
+	
+
+	public InventoryStoreRoleRelation getStoreRoleById(Integer id);
+
+	public InventoryStoreRoleRelation getStoreRoleByName(String name);
+
+	public List<InventoryStoreRoleRelation> listOfRoleRelation(Integer id,String role);
+
+	public List<InventoryStoreRoleRelation> listInventoryStoreRole();
+
+	
 		
 }

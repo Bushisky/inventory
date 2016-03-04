@@ -2,6 +2,7 @@ package org.openmrs.module.inventory.web.controller.substore;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreDrugAccount;
 import org.openmrs.module.inventory.web.controller.global.StoreSingleton;
@@ -32,7 +34,22 @@ public class CreateAccountIssueDrugController {
 		if(!StringUtils.isBlank(account)){
 			int userId = Context.getAuthenticatedUser().getId();
 			InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
-			InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+			//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+			 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+				
+				InventoryStoreRoleRelation srl=null;
+				Role rl = null;
+				for(Role r: role){
+					if(inventoryService.getStoreRoleByName(r.toString())!=null){
+						srl = inventoryService.getStoreRoleByName(r.toString());	
+						rl=r;
+					}
+				}
+				InventoryStore store =null;
+				if(srl!=null){
+					store = inventoryService.getStoreById(srl.getStoreid());
+					
+				}
 			InventoryStoreDrugAccount issueAccount = new InventoryStoreDrugAccount();
 			issueAccount.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
 			issueAccount.setCreatedOn(new Date());

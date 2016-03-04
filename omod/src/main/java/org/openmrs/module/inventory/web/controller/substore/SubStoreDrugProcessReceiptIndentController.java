@@ -14,6 +14,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugIndent;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreDrug;
@@ -54,8 +55,22 @@ public class SubStoreDrugProcessReceiptIndentController {
 	 InventoryStoreDrugIndent indent =inventoryService.getStoreDrugIndentById(indentId);
 	 List<InventoryStoreDrugIndentDetail> listIndentDetail = inventoryService.listStoreDrugIndentDetail(indentId);
 	 
-	InventoryStore subStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
-
+	//InventoryStore subStore =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+	 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+		
+		InventoryStoreRoleRelation srl=null;
+		Role rl = null;
+		for(Role r: role){
+			if(inventoryService.getStoreRoleByName(r.toString())!=null){
+				srl = inventoryService.getStoreRoleByName(r.toString());	
+				rl=r;
+			}
+		}
+		InventoryStore subStore =null;
+		if(srl!=null){
+			subStore = inventoryService.getStoreById(srl.getStoreid());
+			
+		}
 	List<InventoryStoreDrugTransactionDetail> refundDrugList = inventoryService.listTransactionDetail(indent.getTransaction().getId());
 	 if("1".equals(request.getParameter("refuse"))){
 		if(indent != null){

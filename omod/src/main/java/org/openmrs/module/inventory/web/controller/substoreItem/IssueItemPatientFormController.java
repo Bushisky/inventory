@@ -15,6 +15,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.HospitalCoreService;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.util.PatientUtils;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryItem;
@@ -114,8 +115,22 @@ public class IssueItemPatientFormController {
 		}
 		
 		
-		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
 		
+		InventoryStoreRoleRelation srl=null;
+		Role rl = null;
+		for(Role r: role){
+			if(inventoryService.getStoreRoleByName(r.toString())!=null){
+				srl = inventoryService.getStoreRoleByName(r.toString());	
+				rl=r;
+			}
+		}
+		InventoryStore store =null;
+		if(srl!=null){
+			store = inventoryService.getStoreById(srl.getStoreid());
+			
+		}
 		Integer sumCurrentOfItem = inventoryService.sumStoreItemCurrentQuantity(store.getId(), item.getId(), specification);
 		if(sumCurrentOfItem == 0 || issueItemQuantity <= 0 ){
 			errors.add("inventory.issueItem.quantity.required");

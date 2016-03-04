@@ -13,6 +13,7 @@ import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.util.PagingUtil;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.model.InventoryStoreItemPatient;
@@ -36,12 +37,26 @@ public class IssueItemPatientListController {
             Map<String, Object> model, HttpServletRequest request
 	) {
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
-	InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+	//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
 	
 	/*if(store != null && store.getParent() != null && store.getIsItem() != 1){
 		return "redirect:/module/inventory/subStoreIssueItemAccountList.form";
 	}*/
-	
+		List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+		
+		InventoryStoreRoleRelation srl=null;
+		Role rl = null;
+		for(Role r: role){
+			if(inventoryService.getStoreRoleByName(r.toString())!=null){
+				srl = inventoryService.getStoreRoleByName(r.toString());	
+				rl=r;
+			}
+		}
+		InventoryStore store =null;
+		if(srl!=null){
+			store = inventoryService.getStoreById(srl.getStoreid());
+			
+		}
 	 int total = inventoryService.countStoreItemPatient(store.getId(), issueName, fromDate, toDate);
 	 String temp = "";
 		

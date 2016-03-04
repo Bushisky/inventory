@@ -37,6 +37,7 @@ import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.hospitalcore.model.OpdDrugOrder;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.InventoryService;
@@ -351,9 +352,22 @@ public class AjaxController {
 				.getService(InventoryService.class);
 		ConceptService conceptService = Context.getConceptService();
 		InventoryDrug drug = inventoryService.getDrugById(drugId);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (store != null && drug != null && formulationId != null ) {
 			
 			List<InventoryStoreDrugTransactionDetail> listReceiptDrug = inventoryService
@@ -433,9 +447,22 @@ public class AjaxController {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
 		InventoryItem item = inventoryService.getItemById(itemId);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (store != null && item != null) {
 			Integer sumReceiptItem = inventoryService
 					.sumStoreItemCurrentQuantity(store.getId(), item.getId(),
@@ -521,9 +548,22 @@ public class AjaxController {
 				model.addAttribute("specifications", specifications);
 				return "/module/inventory/autocomplete/specificationByItemForIssue";
 			} else {
-				InventoryStore store = inventoryService
-						.getStoreByCollectionRole(new ArrayList<Role>(Context
-								.getAuthenticatedUser().getAllRoles()));
+				//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+				 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+					
+					InventoryStoreRoleRelation srl=null;
+					Role rl = null;
+					for(Role r: role){
+						if(inventoryService.getStoreRoleByName(r.toString())!=null){
+							srl = inventoryService.getStoreRoleByName(r.toString());	
+							rl=r;
+						}
+					}
+					InventoryStore store =null;
+					if(srl!=null){
+						store = inventoryService.getStoreById(srl.getStoreid());
+						
+					}
 				if (store != null) {
 					Integer sumReceiptItem = inventoryService
 							.sumStoreItemCurrentQuantity(store.getId(),
@@ -570,9 +610,22 @@ public class AjaxController {
 				model.addAttribute("specifications", specifications);
 				return "/module/inventory/autocomplete/specificationByItemForIssue";
 			} else {
-				InventoryStore store = inventoryService
-						.getStoreByCollectionRole(new ArrayList<Role>(Context
-								.getAuthenticatedUser().getAllRoles()));
+			//	InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+				 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+					
+					InventoryStoreRoleRelation srl=null;
+					Role rl = null;
+					for(Role r: role){
+						if(inventoryService.getStoreRoleByName(r.toString())!=null){
+							srl = inventoryService.getStoreRoleByName(r.toString());	
+							rl=r;
+						}
+					}
+					InventoryStore store =null;
+					if(srl!=null){
+						store = inventoryService.getStoreById(srl.getStoreid());
+						
+					}
 				if (store != null) {
 					Integer sumReceiptItem = inventoryService
 							.sumStoreItemCurrentQuantity(store.getId(),
@@ -639,9 +692,22 @@ public class AjaxController {
 				.getService(InventoryService.class);
 		int userId = Context.getAuthenticatedUser().getId();
 		String fowardParam = "issueDrugDetail_" + userId;
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (action == 1) {
 			StoreSingleton.getInstance().getHash().remove(fowardParam);
 			StoreSingleton.getInstance().getHash()
@@ -785,9 +851,22 @@ public class AjaxController {
 				.getService(InventoryService.class);
 		int userId = Context.getAuthenticatedUser().getId();
 		String fowardParam = "issueDrugAccountDetail_" + userId;
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context	.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (action == 1) {
 			StoreSingleton.getInstance().getHash().remove(fowardParam);
 			StoreSingleton.getInstance().getHash()
@@ -924,9 +1003,22 @@ public class AjaxController {
 				.getService(InventoryService.class);
 		int userId = Context.getAuthenticatedUser().getId();
 		String fowardParam = "issueItemDetail_" + userId;
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryServic	.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (action == 1) {
 			StoreSingleton.getInstance().getHash().remove(fowardParam);
 			StoreSingleton.getInstance().getHash()
@@ -1036,7 +1128,7 @@ public class AjaxController {
 				transDetail.setParent(pDetail.getTransactionDetail());
 				transDetail = inventoryService
 						.saveStoreItemTransactionDetail(transDetail);
-
+                 
 				pDetail.setItemAccount(issueItemAccount);
 				pDetail.setTransactionDetail(transDetail);
 				// save issue to patient detail
@@ -1063,9 +1155,22 @@ public class AjaxController {
 				.getService(InventoryService.class);
 		int userId = Context.getAuthenticatedUser().getId();
 		String fowardParam = "issueItemDetailPatient_" + userId;
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context	.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (action == 1) {
 			StoreSingleton.getInstance().getHash().remove(fowardParam);
 			StoreSingleton.getInstance().getHash()
@@ -1076,6 +1181,7 @@ public class AjaxController {
 				.getInstance().getHash().get(fowardParam);
 		InventoryStoreItemPatient issueItemPatient = (InventoryStoreItemPatient) StoreSingleton
 				.getInstance().getHash().get("issueItemPatient_" + userId);
+		
 		if (issueItemPatient != null && list != null && list.size() > 0) {
 
 			Date date = new Date();
@@ -1201,9 +1307,22 @@ public class AjaxController {
 			Model model) {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+	//	InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context	.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreDrugTransactionDetail> listViewStockBalance = inventoryService
 				.listStoreDrugTransactionDetail(store.getId(), drugId,
 						formulationId, expiry);
@@ -1218,9 +1337,22 @@ public class AjaxController {
 			Model model) {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreItemTransactionDetail> listViewStockBalance = inventoryService
 				.listStoreItemTransactionDetail(store.getId(), itemId,
 						specificationId, 0, 0);
@@ -1236,9 +1368,22 @@ public class AjaxController {
 			Model model) {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryServic.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreDrugTransactionDetail> listViewStockBalance = inventoryService
 				.listStoreDrugTransactionDetail(store.getId(), drugId,
 						formulationId, expiry);
@@ -1253,9 +1398,22 @@ public class AjaxController {
 			Model model) {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+	//	InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context	.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreItemTransactionDetail> listViewStockBalance = inventoryService
 				.listStoreItemTransactionDetail(store.getId(), itemId,
 						specificationId, 0, 0);
@@ -1270,8 +1428,22 @@ public class AjaxController {
 		
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
-		
+		//InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreDrugPatientDetail> listDrugIssue = inventoryService
 				.listStoreDrugPatientDetail(issueId);
 		InventoryStoreDrugPatient inventoryStoreDrugPatient = new InventoryStoreDrugPatient();
@@ -1466,8 +1638,22 @@ public class AjaxController {
 		
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
-		
+		//InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreDrugPatientDetail> listDrugIssue = inventoryService
 				.listStoreDrugPatientDetail(receiptid);
 		InventoryStoreDrugPatient inventoryStoreDrugPatient = new InventoryStoreDrugPatient();
@@ -1705,7 +1891,22 @@ public class AjaxController {
 		
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreItemPatientDetail> listItemIssue = inventoryService
 				.listStoreItemPatientDetail(issueId);
 		
@@ -1821,7 +2022,22 @@ public class AjaxController {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
 		
-		InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store =  inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		List<InventoryStoreItemPatientDetail> listItemIssue = inventoryService
 				.listStoreItemPatientDetail(receiptid);
 		
@@ -2021,10 +2237,22 @@ public class AjaxController {
 			Map<String, Object> model, HttpServletRequest request) {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
-
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		// ghanshyam 7-august-2013 code review bug
 		if (store != null) {
 			int total = inventoryService.countViewStockBalance(store.getId(),
@@ -2217,9 +2445,22 @@ public class AjaxController {
 		InventoryService inventoryService = (InventoryService) Context
 				.getService(InventoryService.class);
 		InventoryDrug drug = inventoryService.getDrugById(drugId);
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (store != null && drug != null && formulationId != null) {
 			List<InventoryStoreDrugTransactionDetail> listReceiptDrug = inventoryService
 					.listStoreDrugTransactionDetail(store.getId(),
@@ -2308,9 +2549,22 @@ public class AjaxController {
 		HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 		int userId = Context.getAuthenticatedUser().getId();
 		String fowardParam = "issueDrugDetail_" + userId;
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (action == 1) {
 			StoreSingleton.getInstance().getHash().remove(fowardParam);
 			StoreSingleton.getInstance().getHash()
@@ -2505,9 +2759,22 @@ public class AjaxController {
 		HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 		int userId = Context.getAuthenticatedUser().getId();
 		String fowardParam = "issueItemDetailPatient_" + userId;
-		InventoryStore store = inventoryService
-				.getStoreByCollectionRole(new ArrayList<Role>(Context
-						.getAuthenticatedUser().getAllRoles()));
+		//InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+		 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+			
+			InventoryStoreRoleRelation srl=null;
+			Role rl = null;
+			for(Role r: role){
+				if(inventoryService.getStoreRoleByName(r.toString())!=null){
+					srl = inventoryService.getStoreRoleByName(r.toString());	
+					rl=r;
+				}
+			}
+			InventoryStore store =null;
+			if(srl!=null){
+				store = inventoryService.getStoreById(srl.getStoreid());
+				
+			}
 		if (action == 1) {
 			StoreSingleton.getInstance().getHash().remove(fowardParam);
 			StoreSingleton.getInstance().getHash()

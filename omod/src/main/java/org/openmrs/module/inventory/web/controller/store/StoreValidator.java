@@ -22,7 +22,7 @@ public class StoreValidator implements Validator {
     public void validate(Object command, Errors error) {
     	InventoryStore store = (InventoryStore) command;
     	
-    	if( StringUtils.isBlank(store.getName())){
+   	if( StringUtils.isBlank(store.getName())){
     		error.reject("inventory.store.name.required");
     	}
     	if(store.getRole() == null){
@@ -32,9 +32,12 @@ public class StoreValidator implements Validator {
     		error.reject("inventory.store.code.required");
     	}*/
     	InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
+    	 
     	InventoryStore storeE = inventoryService.getStoreByName(store.getName());
-    	if(store.getId() != null){
+      
+       if(store.getId() != null){  System.out.println(	"helllo ji");
     		if(storeE != null && storeE.getId().intValue() != store.getId().intValue()){
+    			
     			error.reject("inventory.store.name.existed");
     		}
     	}else{

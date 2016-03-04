@@ -19,6 +19,7 @@ import org.openmrs.module.hospitalcore.model.InventoryDrugCategory;
 import org.openmrs.module.hospitalcore.model.InventoryDrugFormulation;
 import org.openmrs.module.hospitalcore.model.InventoryStore;
 import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
+import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
 import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.util.DateUtils;
 import org.openmrs.module.inventory.web.controller.global.StoreSingleton;
@@ -45,7 +46,22 @@ public class ReceiptFormController {
 		 
 	 }
 	 model.addAttribute("date",new Date());
-	 InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+	// InventoryStore store = inventoryService.getStoreByCollectionRole(new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles()));
+	 List <Role>role=new ArrayList<Role>(Context.getAuthenticatedUser().getAllRoles());
+		
+		InventoryStoreRoleRelation srl=null;
+		Role rl = null;
+		for(Role r: role){
+			if(inventoryService.getStoreRoleByName(r.toString())!=null){
+				srl = inventoryService.getStoreRoleByName(r.toString());	
+				rl=r;
+			}
+		}
+		InventoryStore store =null;
+		if(srl!=null){
+			store = inventoryService.getStoreById(srl.getStoreid());
+			
+		}
 	 model.addAttribute("store",store);
  	 int userId = Context.getAuthenticatedUser().getId();
 	 String fowardParam = "reipt_"+userId;
