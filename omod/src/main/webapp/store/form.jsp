@@ -39,6 +39,7 @@
 </div>
 </c:if>
 </spring:bind>
+
 <form method="post" class="box" id="inventoryStore">
 <spring:bind path="store.id">
 	<input type="hidden" name="${status.expression}" id="${status.expression}" value="${status.value}" />
@@ -87,10 +88,10 @@
 		<td valign="top"><spring:message code="inventory.store.role"/><em>*</em></td>
 		<td>
 			
-			<select name="rolesss" tabindex="20" multiple>
-				<option value=""></option>
+			<select id="rol" name="roles" tabindex="20" multiple="multiple"  required="required">
+				
                 <c:forEach items="${roles}" var="rl">
-                    <option value="${rl.role}" <c:if test="${rl.role ==store.role.role }"> selected</c:if>>${rl.role}</option>
+                    <option value="${rl.role}"  <c:forEach items="${selectedModule}" var="vselected"><c:if test="${rl.role ==vselected.roleName }"> selected</c:if></c:forEach>>${rl.role}</option>
                 </c:forEach>
    			</select>
 			

@@ -53,21 +53,49 @@ public class StoreFormController {
 		return "/module/inventory/store/form";
 	}
 	@ModelAttribute("roles")
-	public List<Role> populateRoles(HttpServletRequest request) {
+	public List<Role> populateRoles(HttpServletRequest request,Model model) {
 
-		// List<Role> listRole = Context.getUserService().getAllRoles();
-
+		 
+	
 		// return listRole;
-
+		
 		InventoryService inventoryService = (InventoryService) Context.getService(InventoryService.class);
+		String storeId = request.getParameter("storeId");
+		String role = "";
+		InventoryStore store = null;
+		InventoryStoreRoleRelation srl = null;
+		if( storeId != null )
+		{
+			store = inventoryService.getStoreById(NumberUtils.toInt(storeId));
+			if(store != null){
+				role = store.getRole() != null ? store.getRole().getRole() : "";
+			}
+			
+		}
+		
+		List<InventoryStoreRoleRelation> storeRelation = inventoryService.listOfRoleRelationStore(Integer.parseInt(storeId));
+		model.addAttribute("selectedModule", storeRelation);
 
 		List<Role> roles = Context.getUserService().getAllRoles();
+		List<InventoryStoreRoleRelation> relation = inventoryService.listInventoryStoreRole();
+		
 		List<Role> listRole = new ArrayList<Role>();
 		listRole.addAll(roles);
-		List<InventoryStore> stores = inventoryService.listAllInventoryStore();
 		
-		return listRole;
-
+	    List<InventoryStore> stores = inventoryService.listAllInventoryStore();
+	  
+	    if(!CollectionUtils.isEmpty(roles) && !CollectionUtils.isEmpty(stores)){
+		    for( Role roleX : roles ){
+		    	for( InventoryStoreRoleRelation sr : relation )	{
+		    		if( roleX.getRole().equals(sr.getRoleName()) && !(sr.getStoreid().equals(store.getId()))){
+		    			
+		    			listRole.remove(roleX);
+		    		}
+		    	}
+		    }
+	    }
+	    return listRole;
+		
 	}
 
 	@ModelAttribute("parents")
@@ -78,9 +106,9 @@ public class StoreFormController {
 		List<InventoryStore> listParents = new ArrayList<InventoryStore>();
 		listParents.addAll(stores);
 		
-		for (InventoryStore storeV : stores) {
+		for (InventoryStore storeV : stores) { 
 			if (storeV.getParentStores().size() > 0) { // luan. should be
-														// updated here
+				 								// updated here
 				listParents.remove(storeV);
 			}
 
@@ -100,7 +128,7 @@ public class StoreFormController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String onSubmit(@ModelAttribute("store") InventoryStore store,
-			@ModelAttribute("role") InventoryStoreRoleRelation role,
+			
 			Model model, HttpServletRequest request, SessionStatus status) {
 		// new StoreValidator().validate(store, bindingResult);
 		// storeValidator.validate(store, bindingResult);
@@ -128,27 +156,25 @@ public class StoreFormController {
 
 		}
 		
-		
+		//Multiple role to store
 		InventoryStoreRoleRelation rel = new InventoryStoreRoleRelation();
 		int value=0;
-		 String roleName = request.getParameter("rolesss");
+		String roleName = request.getParameter("roles");
+		
 		List<InventoryStoreRoleRelation> roleRelation = inventoryService.listOfRoleRelation(store.getId(),roleName);
+		
 		for (InventoryStoreRoleRelation rl : roleRelation) {
-			
-		if( rl.getRoleName().equals(roleName)&&rl.getStoreid().equals(store.getId()))
-						{
-			value=1;
+			inventoryService.deleteStoreRole(rl);
 		}
-		}
+	
 			if(value==0)
 				
-				{
-				for( String roleName1 :request.getParameterValues("rolesss"))
-				{
+				{ 	
+				for( String roleName1 :request.getParameterValues("roles"))
+					
+				{ 
 				rel.setRoleName(roleName1);
 				rel.setStoreid(store.getId());
-				
-
 				inventoryService.saveStores(rel);
 				
 				}

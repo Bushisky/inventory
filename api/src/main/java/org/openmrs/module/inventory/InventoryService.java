@@ -676,9 +676,13 @@ public interface InventoryService extends OpenmrsService {
 	public List<InventoryStoreRoleRelation> listInventoryStoreRole() throws APIException;
 	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role) throws APIException;
 
-	public InventoryStoreRoleRelation getStoreRoleById(Integer id);
+	public InventoryStoreRoleRelation getStoreRoleById(Integer id)throws APIException;
 
 	
 
-	public InventoryStoreRoleRelation getStoreRoleByName(String name);
+	public InventoryStoreRoleRelation getStoreRoleByName(String name)throws APIException;
+
+	public void deleteStoreRole(InventoryStoreRoleRelation rl) throws APIException;
+
+	public List<InventoryStoreRoleRelation> listOfRoleRelationStore(Integer id) throws APIException;
 }

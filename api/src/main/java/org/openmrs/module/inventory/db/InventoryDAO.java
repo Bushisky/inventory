@@ -631,17 +631,21 @@ public interface InventoryDAO {
 
 	public List<OpdDrugOrder> listOfNotDispensedOrder(Integer patientId,Date date, Encounter encounterId) throws DAOException;
 
-	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role);
+	public InventoryStoreRoleRelation saveStores(InventoryStoreRoleRelation role)throws DAOException;
 
 	
 
-	public InventoryStoreRoleRelation getStoreRoleById(Integer id);
+	public InventoryStoreRoleRelation getStoreRoleById(Integer id)throws DAOException;
 
-	public InventoryStoreRoleRelation getStoreRoleByName(String name);
+	public InventoryStoreRoleRelation getStoreRoleByName(String name)throws DAOException;
 
-	public List<InventoryStoreRoleRelation> listOfRoleRelation(Integer id,String role);
+	public List<InventoryStoreRoleRelation> listOfRoleRelation(Integer id,String role)throws DAOException;
 
-	public List<InventoryStoreRoleRelation> listInventoryStoreRole();
+	public List<InventoryStoreRoleRelation> listInventoryStoreRole()throws DAOException;
+
+	public void deleteStoreRole(InventoryStoreRoleRelation rl)throws DAOException;
+
+	public List<InventoryStoreRoleRelation> listOfRoleRelationStore(Integer id)throws DAOException;
 
 	
 		

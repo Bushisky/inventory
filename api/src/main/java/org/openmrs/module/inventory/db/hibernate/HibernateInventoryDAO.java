@@ -4902,6 +4902,24 @@ public class HibernateInventoryDAO implements InventoryDAO {
 		return list;
 	}
 
+	@Override
+	public void deleteStoreRole(InventoryStoreRoleRelation rl) {
+		sessionFactory.getCurrentSession().delete(rl);
+		
+	}
+
+	
+
+	@Override
+	public List<InventoryStoreRoleRelation> listOfRoleRelationStore(Integer id) {
+		// TODO Auto-generated method stub
+		Criteria criteria = sessionFactory.getCurrentSession()
+				.createCriteria(InventoryStoreRoleRelation.class);
+			criteria.add(Restrictions.eq("storeid", id));
+		List<InventoryStoreRoleRelation> list = criteria.list();
+		return list ;
+	}
+
 	
 
 	

@@ -1068,6 +1068,22 @@ public class InventoryServiceImpl extends BaseOpenmrsService implements Inventor
 		return dao.listInventoryStoreRole();
 	}
 
+	@Override
+	public void deleteStoreRole(InventoryStoreRoleRelation rl)
+			throws APIException {
+		dao.deleteStoreRole(rl);
+		
+	}
+
+	
+
+	@Override
+	public List<InventoryStoreRoleRelation> listOfRoleRelationStore(Integer id)
+			throws APIException {
+		return dao.listOfRoleRelationStore(id);
+		
+	}
+
 	
 
 	
