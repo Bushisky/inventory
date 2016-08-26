@@ -13,45 +13,16 @@
  */
 package org.openmrs.module.inventory.db;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import org.hibernate.SessionFactory;
 import org.openmrs.Encounter;
 import org.openmrs.Role;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.hospitalcore.model.InventoryDrug;
-import org.openmrs.module.hospitalcore.model.InventoryDrugCategory;
-import org.openmrs.module.hospitalcore.model.InventoryDrugFormulation;
-import org.openmrs.module.hospitalcore.model.InventoryDrugUnit;
-import org.openmrs.module.hospitalcore.model.InventoryStore;
-import org.openmrs.module.hospitalcore.model.InventoryStoreDrugIndent;
-import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatient;
-import org.openmrs.module.hospitalcore.model.InventoryStoreDrugPatientDetail;
-import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransaction;
-import org.openmrs.module.hospitalcore.model.InventoryStoreDrugTransactionDetail;
-import org.openmrs.module.hospitalcore.model.InventoryStoreRoleRelation;
-import org.openmrs.module.hospitalcore.model.OpdDrugOrder;
-import org.openmrs.module.hospitalcore.model.PatientSearch;
-import org.openmrs.module.inventory.model.InventoryItem;
-import org.openmrs.module.inventory.model.InventoryItemCategory;
-import org.openmrs.module.inventory.model.InventoryItemSpecification;
-import org.openmrs.module.inventory.model.InventoryItemSubCategory;
-import org.openmrs.module.inventory.model.InventoryItemUnit;
-import org.openmrs.module.inventory.model.InventoryStoreDrug;
-import org.openmrs.module.inventory.model.InventoryStoreDrugAccount;
-import org.openmrs.module.inventory.model.InventoryStoreDrugAccountDetail;
-import org.openmrs.module.inventory.model.InventoryStoreDrugIndentDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItem;
-import org.openmrs.module.inventory.model.InventoryStoreItemAccount;
-import org.openmrs.module.inventory.model.InventoryStoreItemAccountDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItemIndent;
-import org.openmrs.module.inventory.model.InventoryStoreItemIndentDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItemPatient;
-import org.openmrs.module.inventory.model.InventoryStoreItemPatientDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItemTransaction;
-import org.openmrs.module.inventory.model.InventoryStoreItemTransactionDetail;
+import org.openmrs.module.hospitalcore.model.*;
+import org.openmrs.module.inventory.model.*;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -647,6 +618,6 @@ public interface InventoryDAO {
 
 	public List<InventoryStoreRoleRelation> listOfRoleRelationStore(Integer id)throws DAOException;
 
-	
-		
+
+	List<ToxoidModel> getTetanusToxoidTransactionsByPatient(int patientId);
 }

@@ -3,3 +3,6 @@
 /.settings
 /.project
 /.classpath
+.idea/
+api/inventory-api.iml
+omod/inventory-omod.iml
