@@ -28,6 +28,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
@@ -54,24 +55,7 @@ import org.openmrs.module.hospitalcore.model.PatientSearch;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.InventoryConstants;
 import org.openmrs.module.inventory.db.InventoryDAO;
-import org.openmrs.module.inventory.model.InventoryItem;
-import org.openmrs.module.inventory.model.InventoryItemCategory;
-import org.openmrs.module.inventory.model.InventoryItemSpecification;
-import org.openmrs.module.inventory.model.InventoryItemSubCategory;
-import org.openmrs.module.inventory.model.InventoryItemUnit;
-import org.openmrs.module.inventory.model.InventoryStoreDrug;
-import org.openmrs.module.inventory.model.InventoryStoreDrugAccount;
-import org.openmrs.module.inventory.model.InventoryStoreDrugAccountDetail;
-import org.openmrs.module.inventory.model.InventoryStoreDrugIndentDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItem;
-import org.openmrs.module.inventory.model.InventoryStoreItemAccount;
-import org.openmrs.module.inventory.model.InventoryStoreItemAccountDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItemIndent;
-import org.openmrs.module.inventory.model.InventoryStoreItemIndentDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItemPatient;
-import org.openmrs.module.inventory.model.InventoryStoreItemPatientDetail;
-import org.openmrs.module.inventory.model.InventoryStoreItemTransaction;
-import org.openmrs.module.inventory.model.InventoryStoreItemTransactionDetail;
+import org.openmrs.module.inventory.model.*;
 
 /**
  * Hibernate specific Idcards database methods
@@ -4920,7 +4904,21 @@ public class HibernateInventoryDAO implements InventoryDAO {
 		return list ;
 	}
 
-	
+	@Override
+	public List<ToxoidModel> getTetanusToxoidTransactionsByPatient(int patientId) {
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(
+//				"select s.stock_code from stock s where s.stock_code = :stockCode")
+				"SELECT * FROM inventory_store_drug_transaction_detail isdtd " +
+						"INNER JOIN inventory_store_drug_patient_detail isdpd ON isdpd.transaction_detail_id=isdtd.id " +
+						"INNER JOIN inventory_store_drug_patient isdp ON isdp.id=isdpd.store_drug_patient_id " +
+						"WHERE drug_id=:drugId AND flag=:flag AND patient_id=:patientId")
+				.setParameter("drugId", 188).setParameter("flag",2).setParameter("patientId",patientId);
+		List result = query.list();
 
-	
+//		TODO Code for mapping the results to ToxoidModel List
+
+		throw new NotYetImplementedException("Not Yet Implementaed ");
+	}
+
+
 }
