@@ -41,4 +41,14 @@ public class ToxoidModel implements Serializable {
     public void setProvider(String provider) {
         this.provider = provider;
     }
+
+    @Override
+    public String toString() {
+        return "ToxoidModel{" +
+                "vaccineName='" + vaccineName + '\'' +
+                ", dateGiven='" + dateGiven + '\'' +
+                ", dateRecorded='" + dateRecorded + '\'' +
+                ", provider='" + provider + '\'' +
+                '}';
+    }
 }
