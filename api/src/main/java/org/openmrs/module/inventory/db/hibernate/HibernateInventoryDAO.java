@@ -30,10 +30,12 @@ import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.openmrs.Encounter;
 import org.openmrs.Role;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.hospitalcore.model.*;
 import org.openmrs.module.hospitalcore.util.ActionValue;
 import org.openmrs.module.inventory.InventoryConstants;
+import org.openmrs.module.inventory.InventoryService;
 import org.openmrs.module.inventory.db.InventoryDAO;
 import org.openmrs.module.inventory.model.*;
 
@@ -4893,20 +4895,25 @@ public class HibernateInventoryDAO implements InventoryDAO {
         ToxoidModel c;
         Query query = sessionFactory.getCurrentSession().createSQLQuery(
 //				"select s.stock_code from stock s where s.stock_code = :stockCode")
-                "SELECT * FROM inventory_store_drug_transaction_detail isdtd " +
+                "SELECT isdtd.drug_id, isdtd.formulation_id, isdp.created_on, isdp.created_by FROM inventory_store_drug_transaction_detail isdtd " +
                         "INNER JOIN inventory_store_drug_patient_detail isdpd ON isdpd.transaction_detail_id=isdtd.id " +
                         "INNER JOIN inventory_store_drug_patient isdp ON isdp.id=isdpd.store_drug_patient_id " +
                         "WHERE drug_id=:drugId AND flag=:flag AND patient_id=:patientId")
                 .setParameter("drugId", 188).setParameter("flag", 2).setParameter("patientId", patientId);
         List result = query.list();
         Iterator iterator = result.iterator();
+        InventoryService service = Context.getService(InventoryService.class);
         while (iterator.hasNext()) {
             c = new ToxoidModel();
             Object[] next = (Object[]) iterator.next();
-            c.setVaccineName(next[2].toString());
-            c.setDateGiven(next[15].toString());
-            c.setDateRecorded(next[15].toString());
-            c.setProvider(next[39].toString());
+
+            String dId=next[0].toString();
+            String fId =next[1].toString();
+            c.setVaccineName(service.getDrugById(Integer.parseInt(dId)).getNameShort());
+            c.setFormulation(service.getDrugFormulationById(Integer.parseInt(fId)).getName());
+            c.setDateGiven(next[2].toString());
+            c.setDateRecorded(next[2].toString());
+            c.setProvider(next[3].toString());
             models.add(c);
         }
         return models;

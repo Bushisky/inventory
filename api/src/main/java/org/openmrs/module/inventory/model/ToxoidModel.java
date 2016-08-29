@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class ToxoidModel implements Serializable {
     private String vaccineName;
-    private String dateGiven, dateRecorded, provider;
+    private String dateGiven, dateRecorded, provider, formulation;
 
     public String getVaccineName() {
         return vaccineName;
@@ -42,6 +42,14 @@ public class ToxoidModel implements Serializable {
         this.provider = provider;
     }
 
+    public String getFormulation() {
+        return formulation;
+    }
+
+    public void setFormulation(String formulation) {
+        this.formulation = formulation;
+    }
+
     @Override
     public String toString() {
         return "ToxoidModel{" +
@@ -49,6 +57,7 @@ public class ToxoidModel implements Serializable {
                 ", dateGiven='" + dateGiven + '\'' +
                 ", dateRecorded='" + dateRecorded + '\'' +
                 ", provider='" + provider + '\'' +
+                ", formulation='" + formulation + '\'' +
                 '}';
     }
 }
